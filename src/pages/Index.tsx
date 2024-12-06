@@ -1,5 +1,6 @@
 import React from "react";
 import DeviceCard from "@/components/DeviceCard";
+import VideoAnalysis from "@/components/VideoAnalysis";
 import { Card } from "@/components/ui/card";
 import { Activity, Heart, MapPin } from "lucide-react";
 
@@ -39,6 +40,10 @@ const Index = () => {
         {mockDevices.map((device, index) => (
           <DeviceCard key={index} {...device} />
         ))}
+      </div>
+
+      <div className="mt-8">
+        <VideoAnalysis />
       </div>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
