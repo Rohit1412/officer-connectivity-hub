@@ -4,6 +4,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -18,17 +25,35 @@ interface Device {
   name: string;
   type: string;
   status: "connected" | "disconnected";
+  batteryLevel: number;
+  signalStrength: number;
 }
 
 const DeviceManagement = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [devices, setDevices] = useState<Device[]>([
-    { id: "1", name: "Body Cam 1", type: "Body Camera", status: "connected" },
-    { id: "2", name: "Smart Watch 1", type: "Smartwatch", status: "connected" },
+    { 
+      id: "1", 
+      name: "Body Cam 1", 
+      type: "Body Camera", 
+      status: "connected",
+      batteryLevel: 85,
+      signalStrength: 92
+    },
+    { 
+      id: "2", 
+      name: "Smart Watch 1", 
+      type: "Smartwatch", 
+      status: "connected",
+      batteryLevel: 75,
+      signalStrength: 88
+    },
   ]);
+
   const [newDeviceName, setNewDeviceName] = useState("");
   const [newDeviceType, setNewDeviceType] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleAddDevice = () => {
     if (newDeviceName && newDeviceType) {
@@ -46,11 +71,14 @@ const DeviceManagement = () => {
         name: newDeviceName,
         type: newDeviceType,
         status: "disconnected",
+        batteryLevel: 100,
+        signalStrength: 0
       };
 
       setDevices([...devices, newDevice]);
       setNewDeviceName("");
       setNewDeviceType("");
+      setDialogOpen(false);
 
       toast({
         title: "Device Added",
@@ -70,39 +98,51 @@ const DeviceManagement = () => {
         Back to Dashboard
       </Button>
 
-      <h1 className="text-3xl font-bold mb-6">Device Management</h1>
-
-      <Card className="p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Add New Device</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Input
-            placeholder="Device Name"
-            value={newDeviceName}
-            onChange={(e) => setNewDeviceName(e.target.value)}
-          />
-          <Select onValueChange={setNewDeviceType} value={newDeviceType}>
-            <SelectTrigger>
-              <SelectValue placeholder="Device Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Body Camera">Body Camera</SelectItem>
-              <SelectItem value="Smartwatch">Smartwatch</SelectItem>
-              <SelectItem value="Biometric Sensor">Biometric Sensor</SelectItem>
-              <SelectItem value="GPS Tracker">GPS Tracker</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleAddDevice}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Device
-          </Button>
-        </div>
-      </Card>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Device Management</h1>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Device
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Device</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Input
+                  placeholder="Device Name"
+                  value={newDeviceName}
+                  onChange={(e) => setNewDeviceName(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Select onValueChange={setNewDeviceType} value={newDeviceType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Device Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Body Camera">Body Camera</SelectItem>
+                    <SelectItem value="Smartwatch">Smartwatch</SelectItem>
+                    <SelectItem value="Biometric Sensor">Biometric Sensor</SelectItem>
+                    <SelectItem value="GPS Tracker">GPS Tracker</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button onClick={handleAddDevice}>Add Device</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       <div className="grid gap-4">
         {devices.map((device) => (
           <Card
             key={device.id}
-            className="p-4 flex items-center justify-between"
+            className="p-4 flex items-center justify-between hover:shadow-lg transition-all duration-300"
           >
             <div>
               <h3 className="font-medium">{device.name}</h3>
