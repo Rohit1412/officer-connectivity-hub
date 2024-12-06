@@ -1,9 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import DeviceCard from "@/components/DeviceCard";
 import VideoAnalysis from "@/components/VideoAnalysis";
 import AlertSystem from "@/components/AlertSystem";
 import { Card } from "@/components/ui/card";
-import { Activity, Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Activity, Heart, Database, Smartphone } from "lucide-react";
 
 const mockDevices = [
   {
@@ -30,12 +32,31 @@ const mockDevices = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-background p-6 md:p-8">
       <header className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Officer Dashboard</h1>
         <p className="text-secondary">Connected Devices & Vital Signs</p>
       </header>
+
+      <div className="flex gap-4 mb-8">
+        <Button
+          onClick={() => navigate("/data")}
+          className="flex items-center"
+        >
+          <Database className="mr-2 h-4 w-4" />
+          Manage Data
+        </Button>
+        <Button
+          onClick={() => navigate("/devices")}
+          className="flex items-center"
+        >
+          <Smartphone className="mr-2 h-4 w-4" />
+          Manage Devices
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mockDevices.map((device, index) => (
