@@ -6,13 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { Brain, Activity, Database, ArrowLeft } from "lucide-react";
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase client
-const supabase = createClient(
-  'YOUR_SUPABASE_URL',
-  'YOUR_SUPABASE_ANON_KEY'
-);
+import { supabase } from '@/lib/supabase';
 
 const MLAnalytics = () => {
   const navigate = useNavigate();
@@ -20,19 +14,37 @@ const MLAnalytics = () => {
   const { data: liveAnalytics, isLoading: isLiveLoading } = useQuery({
     queryKey: ['liveAnalytics'],
     queryFn: async () => {
-      // Fetch live analytics data from Supabase
-      const { data, error } = await supabase
-        .from('analytics')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(1);
+      // Return mock data if Supabase is not configured
+      if (!supabase) {
+        return {
+          objectDetection: { confidence: 0.95, label: 'Person detected' },
+          activityRecognition: { confidence: 0.88, label: 'Walking' },
+          anomalyDetection: { confidence: 0.12, label: 'Normal behavior' }
+        };
+      }
 
-      if (error) throw error;
-      return data[0] || {
-        objectDetection: { confidence: 0.95, label: 'Person detected' },
-        activityRecognition: { confidence: 0.88, label: 'Walking' },
-        anomalyDetection: { confidence: 0.12, label: 'Normal behavior' }
-      };
+      try {
+        const { data, error } = await supabase
+          .from('analytics')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (error) throw error;
+        
+        return data[0] || {
+          objectDetection: { confidence: 0.95, label: 'Person detected' },
+          activityRecognition: { confidence: 0.88, label: 'Walking' },
+          anomalyDetection: { confidence: 0.12, label: 'Normal behavior' }
+        };
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+        return {
+          objectDetection: { confidence: 0.95, label: 'Person detected' },
+          activityRecognition: { confidence: 0.88, label: 'Walking' },
+          anomalyDetection: { confidence: 0.12, label: 'Normal behavior' }
+        };
+      }
     },
     refetchInterval: 5000
   });
