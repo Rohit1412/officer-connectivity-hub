@@ -1,17 +1,34 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
-import { Brain, Activity, Database } from "lucide-react";
-import { pipeline } from "@huggingface/transformers";
+import { Brain, Activity, Database, ArrowLeft } from "lucide-react";
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabase = createClient(
+  'YOUR_SUPABASE_URL',
+  'YOUR_SUPABASE_ANON_KEY'
+);
 
 const MLAnalytics = () => {
+  const navigate = useNavigate();
+
   const { data: liveAnalytics, isLoading: isLiveLoading } = useQuery({
     queryKey: ['liveAnalytics'],
     queryFn: async () => {
-      // Mock data for demonstration
-      return {
+      // Fetch live analytics data from Supabase
+      const { data, error } = await supabase
+        .from('analytics')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+      return data[0] || {
         objectDetection: { confidence: 0.95, label: 'Person detected' },
         activityRecognition: { confidence: 0.88, label: 'Walking' },
         anomalyDetection: { confidence: 0.12, label: 'Normal behavior' }
@@ -51,9 +68,19 @@ const MLAnalytics = () => {
   return (
     <div className="min-h-screen bg-background p-6 space-y-8">
       <header className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">ML Analytics</h1>
-          <p className="text-muted-foreground">Real-time and historical analysis</p>
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="mr-4"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">ML Analytics</h1>
+            <p className="text-muted-foreground">Real-time and historical analysis</p>
+          </div>
         </div>
         <Badge variant="outline" className="animate-pulse">
           <Activity className="w-4 h-4 mr-2" />
