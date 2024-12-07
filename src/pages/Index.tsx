@@ -5,7 +5,7 @@ import VideoAnalysis from "@/components/VideoAnalysis";
 import AlertSystem from "@/components/AlertSystem";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Activity, Heart, Database, Brain, Sun, Moon } from "lucide-react";
+import { Activity, Heart, Database, Brain, Sun, Moon, Video } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 
 const mockDevices = [
@@ -56,7 +56,7 @@ const Index = () => {
         </Button>
       </header>
 
-      <div className="flex gap-4 mb-8">
+      <div className="flex gap-4 mb-8 flex-wrap">
         <Button
           onClick={() => navigate("/data")}
           className="flex items-center"
@@ -77,6 +77,14 @@ const Index = () => {
         >
           <Brain className="mr-2 h-4 w-4" />
           ML Analytics
+        </Button>
+        <Button
+          onClick={() => navigate("/live")}
+          className="flex items-center"
+          variant="secondary"
+        >
+          <Video className="mr-2 h-4 w-4" />
+          Live Streaming
         </Button>
       </div>
 

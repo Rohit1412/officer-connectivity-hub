@@ -74,6 +74,26 @@ const MLAnalytics = () => {
       name: "Biometric Analysis",
       model: "google/vit-base-patch16-224",
       description: "Monitors officer vital signs and health metrics"
+    },
+    {
+      name: "Pose Estimation",
+      model: "google/movenet",
+      description: "Tracks officer movements and posture"
+    },
+    {
+      name: "Face Recognition",
+      model: "deepface/facenet512",
+      description: "Identifies and verifies personnel"
+    },
+    {
+      name: "Weapon Detection",
+      model: "ultralytics/yolov8",
+      description: "Detects and classifies weapons in video streams"
+    },
+    {
+      name: "Crowd Analysis",
+      model: "microsoft/beit-base-patch16-224",
+      description: "Analyzes crowd dynamics and behavior"
     }
   ];
 
