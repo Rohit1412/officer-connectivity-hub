@@ -5,7 +5,7 @@ import VideoAnalysis from "@/components/VideoAnalysis";
 import AlertSystem from "@/components/AlertSystem";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Activity, Heart, Database, Smartphone } from "lucide-react";
+import { Activity, Heart, Database, Brain } from "lucide-react";
 
 const mockDevices = [
   {
@@ -53,8 +53,15 @@ const Index = () => {
           onClick={() => navigate("/devices")}
           className="flex items-center"
         >
-          <Smartphone className="mr-2 h-4 w-4" />
+          <Activity className="mr-2 h-4 w-4" />
           Manage Devices
+        </Button>
+        <Button
+          onClick={() => navigate("/analytics")}
+          className="flex items-center"
+        >
+          <Brain className="mr-2 h-4 w-4" />
+          ML Analytics
         </Button>
       </div>
 
