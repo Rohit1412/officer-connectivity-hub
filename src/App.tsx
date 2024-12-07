@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import DataManagement from "./pages/DataManagement";
 import DeviceManagement from "./pages/DeviceManagement";
 import MLAnalytics from "./pages/MLAnalytics";
+import LiveStreaming from "./pages/LiveStreaming";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/data" element={<DataManagement />} />
             <Route path="/devices" element={<DeviceManagement />} />
             <Route path="/analytics" element={<MLAnalytics />} />
+            <Route path="/live" element={<LiveStreaming />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
