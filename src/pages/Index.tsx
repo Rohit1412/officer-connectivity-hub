@@ -5,7 +5,8 @@ import VideoAnalysis from "@/components/VideoAnalysis";
 import AlertSystem from "@/components/AlertSystem";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Activity, Heart, Database, Brain } from "lucide-react";
+import { Activity, Heart, Database, Brain, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/components/theme-provider";
 
 const mockDevices = [
   {
@@ -33,12 +34,26 @@ const mockDevices = [
 
 const Index = () => {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Officer Dashboard</h1>
-        <p className="text-secondary">Connected Devices & Vital Signs</p>
+      <header className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Officer Dashboard</h1>
+          <p className="text-secondary">Connected Devices & Vital Signs</p>
+        </div>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+        >
+          {theme === "light" ? (
+            <Moon className="h-5 w-5" />
+          ) : (
+            <Sun className="h-5 w-5" />
+          )}
+        </Button>
       </header>
 
       <div className="flex gap-4 mb-8">
