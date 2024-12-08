@@ -93,7 +93,14 @@ const Index = () => {
           <p>Loading devices...</p>
         ) : devices ? (
           devices.map((device) => (
-            <DeviceCard key={device.id} {...device} />
+            <DeviceCard
+              key={device.id}
+              type={device.type}
+              name={device.name}
+              status={device.status}
+              batteryLevel={device.battery_level}
+              signalStrength={device.signal_strength}
+            />
           ))
         ) : null}
       </div>
