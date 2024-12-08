@@ -13,6 +13,7 @@ import Alerts from "./pages/Alerts";
 import OfficerTracking from "./pages/OfficerTracking";
 import DigitalEvidence from "./pages/DigitalEvidence";
 import SecurityCenter from "./pages/SecurityCenter";
+import Documentation from "./pages/Documentation";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/tracking" element={<OfficerTracking />} />
             <Route path="/evidence" element={<DigitalEvidence />} />
             <Route path="/security" element={<SecurityCenter />} />
+            <Route path="/docs" element={<Documentation />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
