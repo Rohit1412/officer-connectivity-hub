@@ -2,161 +2,173 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { ArrowLeft, Code, Settings, Shield, Wifi } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Documentation = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-8">
-      <Button
-        variant="outline"
-        className="mb-6"
-        onClick={() => navigate("/")}
-      >
+      <Button variant="outline" className="mb-6" onClick={() => navigate("/")}>
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Dashboard
       </Button>
 
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Device Setup Documentation</h1>
-        
-        <Accordion type="single" collapsible className="space-y-4">
-          <AccordionItem value="manual-setup">
-            <AccordionTrigger className="text-xl font-semibold">
-              <div className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Manual Device Setup
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-4">
-              <Card className="p-4">
-                <h3 className="font-semibold mb-2">Step 1: Initial Setup</h3>
-                <ol className="list-decimal list-inside space-y-2">
-                  <li>Power on your device by holding the power button for 3 seconds</li>
-                  <li>Wait for the LED indicator to start blinking blue</li>
-                  <li>Ensure your device is within range of your WiFi network</li>
-                </ol>
-              </Card>
+        <h1 className="text-3xl font-bold mb-6">Documentation & Deployment Guide</h1>
 
-              <Card className="p-4">
-                <h3 className="font-semibold mb-2">Step 2: Network Connection</h3>
-                <ol className="list-decimal list-inside space-y-2">
-                  <li>Open your device's WiFi settings</li>
-                  <li>Connect to the device's temporary network (format: DEVICE-XXXX)</li>
-                  <li>Enter your WiFi credentials when prompted</li>
-                  <li>Wait for the LED to turn solid blue, indicating successful connection</li>
-                </ol>
-              </Card>
+        <Tabs defaultValue="deployment" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="deployment">Deployment</TabsTrigger>
+            <TabsTrigger value="requirements">Requirements</TabsTrigger>
+            <TabsTrigger value="api">API Integration</TabsTrigger>
+          </TabsList>
 
-              <Card className="p-4">
-                <h3 className="font-semibold mb-2">Step 3: Device Registration</h3>
-                <ol className="list-decimal list-inside space-y-2">
-                  <li>Navigate to the Device Management page</li>
-                  <li>Click "Add New Device"</li>
-                  <li>Enter the device serial number (found on the device)</li>
-                  <li>Name your device and select its type</li>
-                  <li>Click "Register Device" to complete setup</li>
-                </ol>
-              </Card>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="api-integration">
-            <AccordionTrigger className="text-xl font-semibold">
-              <div className="flex items-center gap-2">
-                <Code className="h-5 w-5" />
-                API Integration
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-4">
-              <Card className="p-4">
-                <h3 className="font-semibold mb-2">REST API Endpoints</h3>
-                <div className="space-y-2">
-                  <p className="text-sm">Base URL: <code>https://api.yourservice.com/v1</code></p>
-                  <div className="space-y-1">
-                    <p className="font-medium">Register Device:</p>
-                    <pre className="bg-muted p-2 rounded-md text-sm">
-                      POST /devices/register
-                      {`
-{
-  "serial_number": "string",
-  "name": "string",
-  "type": "string"
-}`}
+          <TabsContent value="deployment">
+            <Card className="p-6">
+              <h2 className="text-2xl font-semibold mb-4">Deployment Steps</h2>
+              
+              <div className="space-y-6">
+                <section>
+                  <h3 className="text-xl font-medium mb-3">1. Environment Setup</h3>
+                  <div className="space-y-2">
+                    <p>Create a <code>.env</code> file with the following variables:</p>
+                    <pre className="bg-muted p-4 rounded-lg text-sm">
+                      VITE_SUPABASE_URL=your_supabase_url{"\n"}
+                      VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
                     </pre>
                   </div>
-                  <div className="space-y-1">
-                    <p className="font-medium">Update Device Status:</p>
-                    <pre className="bg-muted p-2 rounded-md text-sm">
-                      PUT /devices/{`{device_id}`}/status
-                      {`
-{
-  "status": "connected" | "disconnected",
-  "battery_level": number,
-  "signal_strength": number
-}`}
-                    </pre>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-medium mb-3">2. Build Process</h3>
+                  <ol className="list-decimal list-inside space-y-2">
+                    <li>Install dependencies: <code>npm install</code></li>
+                    <li>Build the project: <code>npm run build</code></li>
+                    <li>Test the build locally: <code>npm run preview</code></li>
+                  </ol>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-medium mb-3">3. Deployment Options</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Option A: Lovable Hosting</h4>
+                      <p>Click the "Deploy" button in the Lovable interface.</p>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Option B: Custom Hosting</h4>
+                      <ol className="list-decimal list-inside space-y-2">
+                        <li>Export the project to GitHub</li>
+                        <li>Connect your hosting provider (e.g., Netlify, Vercel)</li>
+                        <li>Configure environment variables</li>
+                        <li>Deploy from your repository</li>
+                      </ol>
+                    </div>
                   </div>
-                </div>
-              </Card>
-
-              <Card className="p-4">
-                <h3 className="font-semibold mb-2">Authentication</h3>
-                <p className="text-sm mb-2">All API requests require an API key in the header:</p>
-                <pre className="bg-muted p-2 rounded-md text-sm">
-                  Authorization: Bearer YOUR_API_KEY
-                </pre>
-              </Card>
-
-              <Card className="p-4">
-                <h3 className="font-semibold mb-2">WebSocket Integration</h3>
-                <p className="text-sm mb-2">For real-time updates, connect to our WebSocket endpoint:</p>
-                <pre className="bg-muted p-2 rounded-md text-sm">
-                  ws://api.yourservice.com/v1/devices/ws
-                </pre>
-                <p className="text-sm mt-2">Send heartbeat every 30 seconds to maintain connection.</p>
-              </Card>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="security">
-            <AccordionTrigger className="text-xl font-semibold">
-              <div className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Security Guidelines
+                </section>
               </div>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-4">
-              <Card className="p-4">
-                <h3 className="font-semibold mb-2">Best Practices</h3>
-                <ul className="list-disc list-inside space-y-2">
-                  <li>Regularly update device firmware</li>
-                  <li>Use strong, unique passwords for each device</li>
-                  <li>Enable two-factor authentication when available</li>
-                  <li>Regularly rotate API keys</li>
-                  <li>Monitor device access logs</li>
-                </ul>
-              </Card>
+            </Card>
+          </TabsContent>
 
-              <Card className="p-4">
-                <h3 className="font-semibold mb-2">Network Security</h3>
-                <ul className="list-disc list-inside space-y-2">
-                  <li>Use encrypted connections (HTTPS/WSS)</li>
-                  <li>Implement rate limiting</li>
-                  <li>Set up IP whitelisting</li>
-                  <li>Configure firewall rules</li>
-                </ul>
-              </Card>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+          <TabsContent value="requirements">
+            <Card className="p-6">
+              <h2 className="text-2xl font-semibold mb-4">System Requirements</h2>
+              
+              <div className="space-y-6">
+                <section>
+                  <h3 className="text-xl font-medium mb-3">Frontend Requirements</h3>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Node.js 16.x or higher</li>
+                    <li>npm 7.x or higher</li>
+                    <li>Modern web browser with WebSocket support</li>
+                    <li>JavaScript enabled</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-medium mb-3">Backend Requirements (Supabase)</h3>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Active Supabase project</li>
+                    <li>Configured database tables and policies</li>
+                    <li>Valid API keys and URLs</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-medium mb-3">Network Requirements</h3>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>HTTPS enabled</li>
+                    <li>WebSocket connections allowed</li>
+                    <li>Proper CORS configuration</li>
+                  </ul>
+                </section>
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="api">
+            <Card className="p-6">
+              <h2 className="text-2xl font-semibold mb-4">API Integration Guide</h2>
+              
+              <div className="space-y-6">
+                <section>
+                  <h3 className="text-xl font-medium mb-3">REST API Endpoints</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Devices</h4>
+                      <pre className="bg-muted p-4 rounded-lg text-sm">
+                        GET    /rest/v1/devices{"\n"}
+                        POST   /rest/v1/devices{"\n"}
+                        PATCH  /rest/v1/devices?id=eq.{"{id}"}{"\n"}
+                        DELETE /rest/v1/devices?id=eq.{"{id}"}
+                      </pre>
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-medium mb-3">Authentication</h3>
+                  <p className="mb-2">Include these headers with your requests:</p>
+                  <pre className="bg-muted p-4 rounded-lg text-sm">
+                    apikey: SUPABASE_ANON_KEY{"\n"}
+                    Authorization: Bearer USER_TOKEN
+                  </pre>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-medium mb-3">WebSocket Integration</h3>
+                  <p className="mb-2">Subscribe to real-time updates:</p>
+                  <pre className="bg-muted p-4 rounded-lg text-sm">
+                    const subscription = supabase{"\n"}
+                    {"  "}.channel('devices'){"\n"}
+                    {"  "}.on('postgres_changes', {"{\n"}
+                    {"    "}event: '*',{"\n"}
+                    {"    "}schema: 'public',{"\n"}
+                    {"    "}table: 'devices'{"\n"}
+                    {"  }"}, callback){"\n"}
+                    {"  "}.subscribe()
+                  </pre>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-medium mb-3">Example Device Object</h3>
+                  <pre className="bg-muted p-4 rounded-lg text-sm">
+                    {"{\n"}
+                    {"  "}"id": "uuid",{"\n"}
+                    {"  "}"name": "Device Name",{"\n"}
+                    {"  "}"type": "Body Camera",{"\n"}
+                    {"  "}"status": "connected",{"\n"}
+                    {"  "}"battery_level": 85,{"\n"}
+                    {"  "}"signal_strength": 92{"\n"}
+                    {"}"}
+                  </pre>
+                </section>
+              </div>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
