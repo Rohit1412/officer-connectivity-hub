@@ -5,36 +5,25 @@ import VideoAnalysis from "@/components/VideoAnalysis";
 import AlertSystem from "@/components/AlertSystem";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Activity, Heart, Database, Brain, Sun, Moon, Video, Bell, Shield, MapPin, FileText } from "lucide-react";
+import { Activity, Heart, Sun, Moon, Video, Bell, Shield, MapPin, FileText } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-
-const mockDevices = [
-  {
-    type: "Body Camera",
-    name: "BC-001",
-    status: "connected" as const,
-    batteryLevel: 85,
-    signalStrength: 92,
-  },
-  {
-    type: "Smartwatch",
-    name: "SW-102",
-    status: "connected" as const,
-    batteryLevel: 65,
-    signalStrength: 88,
-  },
-  {
-    type: "Biometric Sensor",
-    name: "BS-304",
-    status: "connected" as const,
-    batteryLevel: 90,
-    signalStrength: 95,
-  },
-];
+import { useDevices } from "@/hooks/useSupabase";
+import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { data: devices, isLoading, error } = useDevices();
+
+  React.useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error loading devices",
+        description: "Please try again later",
+      });
+    }
+  }, [error]);
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-8">
@@ -100,9 +89,13 @@ const Index = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockDevices.map((device, index) => (
-          <DeviceCard key={index} {...device} />
-        ))}
+        {isLoading ? (
+          <p>Loading devices...</p>
+        ) : devices ? (
+          devices.map((device) => (
+            <DeviceCard key={device.id} {...device} />
+          ))
+        ) : null}
       </div>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
