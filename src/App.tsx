@@ -9,6 +9,10 @@ import DataManagement from "./pages/DataManagement";
 import DeviceManagement from "./pages/DeviceManagement";
 import MLAnalytics from "./pages/MLAnalytics";
 import LiveStreaming from "./pages/LiveStreaming";
+import Alerts from "./pages/Alerts";
+import OfficerTracking from "./pages/OfficerTracking";
+import DigitalEvidence from "./pages/DigitalEvidence";
+import SecurityCenter from "./pages/SecurityCenter";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +29,10 @@ const App = () => (
             <Route path="/devices" element={<DeviceManagement />} />
             <Route path="/analytics" element={<MLAnalytics />} />
             <Route path="/live" element={<LiveStreaming />} />
+            <Route path="/alerts" element={<Alerts />} />
+            <Route path="/tracking" element={<OfficerTracking />} />
+            <Route path="/evidence" element={<DigitalEvidence />} />
+            <Route path="/security" element={<SecurityCenter />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
