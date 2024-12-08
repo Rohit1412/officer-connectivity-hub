@@ -59,40 +59,40 @@ const Index = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <Button
           onClick={() => navigate("/alerts")}
-          className="flex items-center justify-center gap-2 h-16"
-          variant="secondary"
+          className="flex items-center justify-center gap-2 h-16 bg-primary hover:bg-primary/90"
+          variant="default"
         >
           <Bell className="h-5 w-5" />
           Emergency Alerts
         </Button>
         <Button
           onClick={() => navigate("/tracking")}
-          className="flex items-center justify-center gap-2 h-16"
-          variant="secondary"
+          className="flex items-center justify-center gap-2 h-16 bg-primary hover:bg-primary/90"
+          variant="default"
         >
           <MapPin className="h-5 w-5" />
           Officer Tracking
         </Button>
         <Button
           onClick={() => navigate("/evidence")}
-          className="flex items-center justify-center gap-2 h-16"
-          variant="secondary"
+          className="flex items-center justify-center gap-2 h-16 bg-primary hover:bg-primary/90"
+          variant="default"
         >
           <FileText className="h-5 w-5" />
           Digital Evidence
         </Button>
         <Button
           onClick={() => navigate("/security")}
-          className="flex items-center justify-center gap-2 h-16"
-          variant="secondary"
+          className="flex items-center justify-center gap-2 h-16 bg-primary hover:bg-primary/90"
+          variant="default"
         >
           <Shield className="h-5 w-5" />
           Security Center
         </Button>
         <Button
           onClick={() => navigate("/live")}
-          className="flex items-center justify-center gap-2 h-16"
-          variant="secondary"
+          className="flex items-center justify-center gap-2 h-16 bg-primary hover:bg-primary/90"
+          variant="default"
         >
           <Video className="h-5 w-5" />
           Live Streaming
