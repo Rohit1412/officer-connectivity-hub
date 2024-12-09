@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Battery, Signal } from "lucide-react";
+import { Activity, Battery, Signal, Bluetooth, Globe } from "lucide-react";
 
 interface DeviceCardProps {
   type: string;
@@ -9,6 +9,9 @@ interface DeviceCardProps {
   status: "connected" | "disconnected";
   batteryLevel: number;
   signalStrength: number;
+  connectionType: 'ble' | 'url' | 'direct';
+  streamUrl?: string;
+  bleId?: string;
 }
 
 const DeviceCard = ({
@@ -17,6 +20,9 @@ const DeviceCard = ({
   status,
   batteryLevel,
   signalStrength,
+  connectionType,
+  streamUrl,
+  bleId,
 }: DeviceCardProps) => {
   return (
     <Card className="p-6 hover:shadow-lg transition-all duration-300 animate-fade-in">
@@ -39,6 +45,18 @@ const DeviceCard = ({
               {status}
             </span>
           </div>
+          {connectionType === 'ble' && bleId && (
+            <div className="flex items-center mt-2 text-sm text-muted-foreground">
+              <Bluetooth className="w-4 h-4 mr-1" />
+              <span>BLE ID: {bleId}</span>
+            </div>
+          )}
+          {connectionType === 'url' && streamUrl && (
+            <div className="flex items-center mt-2 text-sm text-muted-foreground">
+              <Globe className="w-4 h-4 mr-1" />
+              <span className="truncate max-w-[200px]">{streamUrl}</span>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-end space-y-2">
           <div className="flex items-center space-x-1">

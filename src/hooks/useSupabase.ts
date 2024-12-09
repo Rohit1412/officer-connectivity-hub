@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import type { Officer, Device, Analytics } from '@/types';
+import type { Officer, Device, Analytics, StreamConnection } from '@/types';
 
 export const useOfficers = () => {
   return useQuery({
@@ -30,16 +30,16 @@ export const useDevices = () => {
   });
 };
 
-export const useAnalytics = () => {
+export const useStreamConnections = () => {
   return useQuery({
-    queryKey: ['analytics'],
+    queryKey: ['stream_connections'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('analytics')
+        .from('stream_connections')
         .select('*');
       
       if (error) throw error;
-      return data as Analytics[];
+      return data as StreamConnection[];
     },
   });
 };
@@ -60,6 +60,26 @@ export const useAddDevice = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['devices'] });
+    },
+  });
+};
+
+export const useAddStreamConnection = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (connection: Omit<StreamConnection, 'id'>) => {
+      const { data, error } = await supabase
+        .from('stream_connections')
+        .insert(connection)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stream_connections'] });
     },
   });
 };

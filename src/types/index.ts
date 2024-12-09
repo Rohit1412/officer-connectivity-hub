@@ -14,6 +14,9 @@ export interface Device {
   status: 'connected' | 'disconnected';
   battery_level: number;
   signal_strength: number;
+  connection_type: 'ble' | 'url' | 'direct';
+  stream_url?: string;
+  ble_id?: string;
 }
 
 export interface Analytics {
@@ -24,4 +27,16 @@ export interface Analytics {
   anomaly_detection: any;
   device_id: string;
   officer_id: string;
+}
+
+export interface StreamConnection {
+  url: string;
+  status: 'active' | 'inactive';
+  last_ping: Date;
+}
+
+export interface BLEDevice {
+  id: string;
+  name: string;
+  rssi: number;
 }

@@ -1,10 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Default to empty string if environment variables are not set
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-// Create client only if URL is valid
 export const supabase = supabaseUrl 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
@@ -28,7 +26,10 @@ create table devices (
   type text not null,
   status text not null,
   battery_level integer,
-  signal_strength integer
+  signal_strength integer,
+  connection_type text not null,
+  stream_url text,
+  ble_id text
 );
 
 create table officers (
@@ -37,5 +38,12 @@ create table officers (
   name text not null,
   badge_number text not null,
   department text not null
+);
+
+create table stream_connections (
+  id uuid default uuid_generate_v4() primary key,
+  url text not null,
+  status text not null,
+  last_ping timestamp with time zone default timezone('utc'::text, now()) not null
 );
 */

@@ -7,13 +7,16 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, Heart, Sun, Moon, Video, Bell, Shield, MapPin, FileText } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import { useDevices } from "@/hooks/useSupabase";
+import { useDevices, useStreamConnections } from "@/hooks/useSupabase";
+import { useBLE } from "@/hooks/useBLE";
 import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { data: devices, isLoading, error } = useDevices();
+  const { startScanning, isScanning } = useBLE();
+  const { data: streamConnections } = useStreamConnections();
 
   React.useEffect(() => {
     if (error) {
@@ -24,6 +27,12 @@ const Index = () => {
       });
     }
   }, [error]);
+
+  const handleScanBLE = () => {
+    if (!isScanning) {
+      startScanning();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-8">
@@ -88,6 +97,13 @@ const Index = () => {
         </Button>
       </div>
 
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold">Connected Devices</h2>
+        <Button onClick={handleScanBLE} disabled={isScanning}>
+          {isScanning ? "Scanning..." : "Scan for BLE Devices"}
+        </Button>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
           <p>Loading devices...</p>
@@ -100,6 +116,9 @@ const Index = () => {
               status={device.status}
               batteryLevel={device.battery_level}
               signalStrength={device.signal_strength}
+              connectionType={device.connection_type}
+              streamUrl={device.stream_url}
+              bleId={device.ble_id}
             />
           ))
         ) : null}
