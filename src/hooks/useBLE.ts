@@ -2,6 +2,24 @@ import { useState, useEffect } from 'react';
 import { BLEDevice } from '@/types';
 import { useToast } from '@/components/ui/use-toast';
 
+// Add type declaration for Web Bluetooth API
+declare global {
+  interface Navigator {
+    bluetooth: {
+      requestDevice(options: {
+        acceptAllDevices?: boolean;
+        optionalServices?: string[];
+      }): Promise<{
+        id: string;
+        name: string | null;
+        gatt?: {
+          connect(): Promise<any>;
+        };
+      }>;
+    };
+  }
+}
+
 export const useBLE = () => {
   const [devices, setDevices] = useState<BLEDevice[]>([]);
   const [isScanning, setIsScanning] = useState(false);
