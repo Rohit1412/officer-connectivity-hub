@@ -1,30 +1,21 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import AlertSystem from "@/components/AlertSystem";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 const Alerts = () => {
-  const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen bg-background p-6">
-      <Button
-        variant="outline"
-        className="mb-6"
-        onClick={() => navigate("/")}
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Dashboard
-      </Button>
-
-      <div className="grid gap-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Emergency Alerts</h1>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar />
+        <div className="flex-1 bg-background p-6">
+          <div className="grid gap-6">
+            <h1 className="text-3xl font-bold">Emergency Alerts</h1>
+            <AlertSystem />
+          </div>
         </div>
-        <AlertSystem />
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

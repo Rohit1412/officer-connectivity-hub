@@ -11,7 +11,7 @@ import {
   Brain,
   Car,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -39,22 +39,25 @@ const navigationItems = [
 
 export function AppSidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
-    <Sidebar>
+    <Sidebar className="border-r border-border">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-lg font-semibold px-4">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     onClick={() => navigate(item.url)}
-                    className="cursor-pointer"
+                    className={`cursor-pointer hover:bg-accent/10 transition-colors ${
+                      location.pathname === item.url ? "bg-accent/20" : ""
+                    }`}
                   >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
+                    <item.icon className="h-5 w-5" />
+                    <span className="ml-2">{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
