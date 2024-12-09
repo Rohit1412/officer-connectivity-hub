@@ -10,6 +10,8 @@ import { useTheme } from "@/components/theme-provider";
 import { useDevices, useStreamConnections } from "@/hooks/useSupabase";
 import { useBLE } from "@/hooks/useBLE";
 import { toast } from "@/components/ui/use-toast";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -35,24 +37,27 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-8">
-      <header className="mb-8 flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Officer Dashboard</h1>
-          <p className="text-secondary">Connected Devices & Vital Signs</p>
-        </div>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        >
-          {theme === "light" ? (
-            <Moon className="h-5 w-5" />
-          ) : (
-            <Sun className="h-5 w-5" />
-          )}
-        </Button>
-      </header>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar />
+        <div className="flex-1 bg-background p-6 md:p-8">
+          <header className="mb-8 flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Officer Dashboard</h1>
+              <p className="text-secondary">Connected Devices & Vital Signs</p>
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            >
+              {theme === "light" ? (
+                <Moon className="h-5 w-5" />
+              ) : (
+                <Sun className="h-5 w-5" />
+              )}
+            </Button>
+          </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <Button
@@ -176,7 +181,9 @@ const Index = () => {
           </div>
         </Card>
       </div>
-    </div>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
