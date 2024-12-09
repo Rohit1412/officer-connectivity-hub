@@ -5,7 +5,7 @@ import VideoAnalysis from "@/components/VideoAnalysis";
 import AlertSystem from "@/components/AlertSystem";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Activity, Heart, Sun, Moon } from "lucide-react";
+import { Activity, Heart, Sun, Moon, Shield } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useDevices, useStreamConnections } from "@/hooks/useSupabase";
 import { useBLE } from "@/hooks/useBLE";
@@ -41,9 +41,12 @@ const Index = () => {
         <AppSidebar />
         <div className="flex-1 bg-background p-6 md:p-8">
           <header className="mb-8 flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Officer Dashboard</h1>
-              <p className="text-secondary">Connected Devices & Vital Signs</p>
+            <div className="flex items-center gap-3">
+              <Shield className="h-8 w-8 text-accent" />
+              <div>
+                <h1 className="text-3xl font-bold mb-2">भारतीय पुलिस बल डैशबोर्ड</h1>
+                <p className="text-secondary">Indian Police Force Command Center</p>
+              </div>
             </div>
             <Button
               variant="outline"
@@ -98,7 +101,7 @@ const Index = () => {
             <Card className="p-6">
               <div className="flex items-center space-x-2 mb-4">
                 <Heart className="w-5 h-5 text-accent" />
-                <h2 className="text-xl font-semibold">Vital Signs</h2>
+                <h2 className="text-xl font-semibold">Officer Health Status</h2>
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
@@ -119,20 +122,20 @@ const Index = () => {
             <Card className="p-6">
               <div className="flex items-center space-x-2 mb-4">
                 <Activity className="w-5 h-5 text-accent" />
-                <h2 className="text-xl font-semibold">Activity</h2>
+                <h2 className="text-xl font-semibold">Patrol Activity</h2>
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-secondary">Steps</span>
-                  <span className="font-medium">8,432</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-secondary">Distance</span>
+                  <span className="text-secondary">Distance Covered</span>
                   <span className="font-medium">3.2 km</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-secondary">Active Hours</span>
                   <span className="font-medium">4.5 hrs</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-secondary">Area Coverage</span>
+                  <span className="font-medium">85%</span>
                 </div>
               </div>
             </Card>

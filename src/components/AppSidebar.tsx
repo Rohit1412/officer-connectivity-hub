@@ -24,17 +24,17 @@ import {
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
-  { title: "Dashboard", url: "/", icon: Activity },
-  { title: "Data Management", url: "/data", icon: Database },
-  { title: "Device Management", url: "/devices", icon: Smartphone },
-  { title: "ML Analytics", url: "/analytics", icon: Brain },
-  { title: "Live Streaming", url: "/live", icon: Video },
-  { title: "Alerts", url: "/alerts", icon: Bell },
-  { title: "Officer Tracking", url: "/tracking", icon: Navigation },
-  { title: "Digital Evidence", url: "/evidence", icon: FileText },
-  { title: "Security Center", url: "/security", icon: Shield },
-  { title: "Crime Mapping", url: "/crime-mapping", icon: MapPin },
-  { title: "Vehicle Dispatch", url: "/dispatch", icon: Car },
+  { title: "मुख्य डैशबोर्ड", url: "/", icon: Activity },
+  { title: "डेटा प्रबंधन", url: "/data", icon: Database },
+  { title: "डिवाइस प्रबंधन", url: "/devices", icon: Smartphone },
+  { title: "एमएल एनालिटिक्स", url: "/analytics", icon: Brain },
+  { title: "लाइव स्ट्रीमिंग", url: "/live", icon: Video },
+  { title: "अलर्ट", url: "/alerts", icon: Bell },
+  { title: "अधिकारी ट्रैकिंग", url: "/tracking", icon: Navigation },
+  { title: "डिजिटल साक्ष्य", url: "/evidence", icon: FileText },
+  { title: "सुरक्षा केंद्र", url: "/security", icon: Shield },
+  { title: "अपराध मैपिंग", url: "/crime-mapping", icon: MapPin },
+  { title: "वाहन डिस्पैच", url: "/dispatch", icon: Car },
 ];
 
 export function AppSidebar() {
@@ -42,10 +42,16 @@ export function AppSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar className="border-r border-border">
+    <Sidebar className="border-r border-border bg-slate-900">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-lg font-semibold px-4">Navigation</SidebarGroupLabel>
+          <div className="flex items-center gap-2 px-4 py-6">
+            <Shield className="h-8 w-8 text-accent" />
+            <div className="flex flex-col">
+              <span className="text-lg font-semibold text-white">भारतीय पुलिस बल</span>
+              <span className="text-sm text-gray-400">Command Center</span>
+            </div>
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
