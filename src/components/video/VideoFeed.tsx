@@ -9,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import VideoPreview from "./VideoPreview";
+import DetectionsList from "./DetectionsList";
 
 interface VideoFeedProps {
   deviceId: string;
