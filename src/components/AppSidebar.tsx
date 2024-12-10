@@ -1,26 +1,25 @@
-import {
-  Activity,
-  Bell,
-  Database,
-  FileText,
-  MapPin,
-  Navigation,
-  Shield,
-  Smartphone,
-  Video,
-  Brain,
-  Car,
-} from "lucide-react";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
+  Activity,
+  Database,
+  Smartphone,
+  Brain,
+  Video,
+  Bell,
+  Navigation,
+  FileText,
+  Shield,
+  MapPin,
+  Car,
+  History,
+} from "lucide-react";
+import {
   Sidebar,
+  SidebarHeader,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarNav,
+  SidebarNavLink,
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
@@ -35,6 +34,7 @@ const navigationItems = [
   { title: "Security Center", url: "/security", icon: Shield },
   { title: "Crime Mapping", url: "/crime-mapping", icon: MapPin },
   { title: "Vehicle Dispatch", url: "/dispatch", icon: Car },
+  { title: "Connection History", url: "/connection-history", icon: History },
 ];
 
 export function AppSidebar() {
@@ -42,34 +42,28 @@ export function AppSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar className="border-r border-border bg-slate-900">
-      <SidebarContent>
-        <SidebarGroup>
-          <div className="flex items-center gap-2 px-4 py-6">
-            <Shield className="h-8 w-8 text-accent" />
-            <div className="flex flex-col">
-              <span className="text-lg font-semibold text-white">Indian Police Force</span>
-              <span className="text-sm text-gray-400">Command Center</span>
-            </div>
+    <Sidebar>
+      <SidebarHeader>
+        <div className="flex items-center gap-2 px-4 py-6">
+          <Shield className="h-8 w-8 text-accent" />
+          <div className="flex flex-col">
+            <span className="text-lg font-semibold text-white">Indian Police Force</span>
+            <span className="text-sm text-gray-400">Command Center</span>
           </div>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navigationItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    onClick={() => navigate(item.url)}
-                    className={`cursor-pointer hover:bg-accent/10 transition-colors ${
-                      location.pathname === item.url ? "bg-accent/20" : ""
-                    }`}
-                  >
-                    <item.icon className="h-5 w-5" />
-                    <span className="ml-2">{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        </div>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarNav>
+          {navigationItems.map((item) => (
+            <SidebarNavLink
+              key={item.url}
+              icon={item.icon}
+              title={item.title}
+              active={location.pathname === item.url}
+              onClick={() => navigate(item.url)}
+            />
+          ))}
+        </SidebarNav>
       </SidebarContent>
     </Sidebar>
   );

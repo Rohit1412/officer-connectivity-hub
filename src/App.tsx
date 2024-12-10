@@ -16,6 +16,7 @@ import SecurityCenter from "./pages/SecurityCenter";
 import Documentation from "./pages/Documentation";
 import CrimeMapping from "./pages/CrimeMapping";
 import VehicleDispatch from "./pages/VehicleDispatch";
+import ConnectionHistory from "./pages/ConnectionHistory";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/docs" element={<Documentation />} />
             <Route path="/crime-mapping" element={<CrimeMapping />} />
             <Route path="/dispatch" element={<VehicleDispatch />} />
+            <Route path="/connection-history" element={<ConnectionHistory />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

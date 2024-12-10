@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Video, Eye, AlertCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface VideoFeedProps {
   deviceId: string;
@@ -11,9 +18,10 @@ interface VideoFeedProps {
     confidence: number;
     timestamp: string;
   }[];
+  onModelChange?: (model: string) => void;
 }
 
-const VideoFeed = ({ deviceId, status, detections }: VideoFeedProps) => {
+const VideoFeed = ({ deviceId, status, detections, onModelChange }: VideoFeedProps) => {
   return (
     <Card className="p-4 hover:shadow-lg transition-all duration-300">
       <div className="flex items-center justify-between mb-4">
@@ -21,12 +29,24 @@ const VideoFeed = ({ deviceId, status, detections }: VideoFeedProps) => {
           <Video className="w-5 h-5 text-accent" />
           <span className="font-medium">Camera {deviceId}</span>
         </div>
-        <Badge
-          variant={status === "active" ? "default" : "secondary"}
-          className={status === "active" ? "bg-accent" : ""}
-        >
-          {status}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Select onValueChange={onModelChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Model" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="yolov8">YOLOv8</SelectItem>
+              <SelectItem value="efficientdet">EfficientDet</SelectItem>
+              <SelectItem value="mobilenet">MobileNet</SelectItem>
+            </SelectContent>
+          </Select>
+          <Badge
+            variant={status === "active" ? "default" : "secondary"}
+            className={status === "active" ? "bg-accent" : ""}
+          >
+            {status}
+          </Badge>
+        </div>
       </div>
       <div className="bg-gray-100 dark:bg-gray-800 rounded-lg h-40 mb-4 flex items-center justify-center">
         <Eye className="w-8 h-8 text-gray-400" />
@@ -53,6 +73,8 @@ const VideoFeed = ({ deviceId, status, detections }: VideoFeedProps) => {
 };
 
 const VideoAnalysis = () => {
+  const [selectedModels, setSelectedModels] = useState<Record<string, string>>({});
+
   const mockFeeds: VideoFeedProps[] = [
     {
       deviceId: "BC001",
@@ -83,6 +105,13 @@ const VideoAnalysis = () => {
     },
   ];
 
+  const handleModelChange = (deviceId: string, model: string) => {
+    setSelectedModels(prev => ({
+      ...prev,
+      [deviceId]: model
+    }));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -93,7 +122,11 @@ const VideoAnalysis = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {mockFeeds.map((feed, index) => (
-          <VideoFeed key={index} {...feed} />
+          <VideoFeed 
+            key={index} 
+            {...feed} 
+            onModelChange={(model) => handleModelChange(feed.deviceId, model)}
+          />
         ))}
       </div>
     </div>
