@@ -8,8 +8,8 @@ import {
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-// Using India TopoJSON
-const geoUrl = "https://raw.githubusercontent.com/deldersveld/topojson/master/countries/india/india-states.json";
+// Using a reliable TopoJSON source for India
+const geoUrl = "https://raw.githubusercontent.com/HarshitChhipa/india-topojson/master/india.json";
 
 // Updated coordinates for major Indian cities
 const vehicleData = [
@@ -31,6 +31,12 @@ const vehicleData = [
     status: "available",
     unit: "Unit 3",
   },
+  {
+    id: "V004",
+    coordinates: [88.3639, 22.5726], // Kolkata
+    status: "patrolling",
+    unit: "Unit 4",
+  },
 ];
 
 const VehicleMap = () => {
@@ -44,44 +50,66 @@ const VehicleMap = () => {
         ))}
       </div>
       
-      <div style={{ width: "100%", height: "500px" }}>
-        <ComposableMap
-          projection="geoMercator"
-          projectionConfig={{
-            scale: 1000,
-            center: [78.9629, 22.5937] // Centered on India
-          }}
-        >
-          <Geographies geography={geoUrl}>
-            {({ geographies }) =>
-              geographies.map((geo) => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill="#EAEAEC"
-                  stroke="#D6D6DA"
-                />
-              ))
+      <Card className="p-4">
+        <div style={{ width: "100%", height: "500px" }}>
+          <ComposableMap
+            projection="geoMercator"
+            projectionConfig={{
+              scale: 1000,
+              center: [78.9629, 22.5937] // Centered on India
+            }}
+          >
+            <Geographies geography={geoUrl}>
+              {({ geographies }) =>
+                geographies.map((geo) => (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill="#EAEAEC"
+                    stroke="#D6D6DA"
+                    style={{
+                      default: {
+                        fill: "#EAEAEC",
+                        stroke: "#D6D6DA",
+                        strokeWidth: 0.75,
+                        outline: "none",
+                      },
+                      hover: {
+                        fill: "#F5F5F5",
+                        stroke: "#D6D6DA",
+                        strokeWidth: 1,
+                        outline: "none",
+                      },
+                      pressed: {
+                        fill: "#E5E5E5",
+                        stroke: "#D6D6DA",
+                        strokeWidth: 1,
+                        outline: "none",
+                      },
+                    }}
+                  />
+                ))
             }
-          </Geographies>
-          {vehicleData.map((vehicle) => (
-            <Marker key={vehicle.id} coordinates={vehicle.coordinates}>
-              <circle
-                r={6}
-                fill={
-                  vehicle.status === "responding"
-                    ? "#ef4444"
-                    : vehicle.status === "patrolling"
-                    ? "#3b82f6"
-                    : "#22c55e"
-                }
-                stroke="#fff"
-                strokeWidth={2}
-              />
-            </Marker>
-          ))}
-        </ComposableMap>
-      </div>
+            </Geographies>
+            {vehicleData.map((vehicle) => (
+              <Marker key={vehicle.id} coordinates={vehicle.coordinates}>
+                <circle
+                  r={6}
+                  fill={
+                    vehicle.status === "responding"
+                      ? "#ef4444"
+                      : vehicle.status === "patrolling"
+                      ? "#3b82f6"
+                      : "#22c55e"
+                  }
+                  stroke="#fff"
+                  strokeWidth={2}
+                />
+              </Marker>
+            ))}
+          </ComposableMap>
+        </div>
+      </Card>
     </div>
   );
 };
