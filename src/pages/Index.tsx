@@ -18,7 +18,7 @@ const Index = () => {
   const { theme, setTheme } = useTheme();
   const { devices, removeDevice } = useDeviceCache();
   const { startScanning, isScanning } = useBLE();
-  const { data: streamConnections } = useStreamConnections();
+  const { data: streamConnections, error } = useStreamConnections();
 
   React.useEffect(() => {
     if (error) {
