@@ -8,25 +8,26 @@ import {
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
+// Using India TopoJSON
+const geoUrl = "https://raw.githubusercontent.com/deldersveld/topojson/master/countries/india/india-states.json";
 
-// Dummy vehicle data
+// Updated coordinates for major Indian cities
 const vehicleData = [
   {
     id: "V001",
-    coordinates: [-122.4194, 37.7749],
+    coordinates: [77.2090, 28.6139], // Delhi
     status: "responding",
     unit: "Unit 1",
   },
   {
     id: "V002",
-    coordinates: [-122.4284, 37.7649],
+    coordinates: [72.8777, 19.0760], // Mumbai
     status: "patrolling",
     unit: "Unit 2",
   },
   {
     id: "V003",
-    coordinates: [-122.4094, 37.7849],
+    coordinates: [80.2707, 13.0827], // Chennai
     status: "available",
     unit: "Unit 3",
   },
@@ -45,8 +46,11 @@ const VehicleMap = () => {
       
       <div style={{ width: "100%", height: "500px" }}>
         <ComposableMap
-          projection="geoAlbersUsa"
-          projectionConfig={{ scale: 1000 }}
+          projection="geoMercator"
+          projectionConfig={{
+            scale: 1000,
+            center: [78.9629, 22.5937] // Centered on India
+          }}
         >
           <Geographies geography={geoUrl}>
             {({ geographies }) =>

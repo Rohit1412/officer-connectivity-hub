@@ -1,7 +1,20 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Battery, Signal, Bluetooth, Globe } from "lucide-react";
+import { Activity, Battery, Signal, Bluetooth, Globe, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 interface DeviceCardProps {
   type: string;
@@ -12,6 +25,7 @@ interface DeviceCardProps {
   connectionType: 'ble' | 'url' | 'direct';
   streamUrl?: string;
   bleId?: string;
+  onDelete?: () => void;
 }
 
 const DeviceCard = ({
@@ -23,7 +37,20 @@ const DeviceCard = ({
   connectionType,
   streamUrl,
   bleId,
+  onDelete,
 }: DeviceCardProps) => {
+  const { toast } = useToast();
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete();
+      toast({
+        title: "Device Deleted",
+        description: `${name} has been removed from connected devices.`,
+      });
+    }
+  };
+
   return (
     <Card className="p-6 hover:shadow-lg transition-all duration-300 animate-fade-in">
       <div className="flex items-start justify-between">
@@ -67,6 +94,25 @@ const DeviceCard = ({
             <Signal className="w-4 h-4" />
             <span className="text-sm">{signalStrength}%</span>
           </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Device</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to remove {name}? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </Card>

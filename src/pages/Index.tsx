@@ -12,10 +12,11 @@ import { useBLE } from "@/hooks/useBLE";
 import { toast } from "@/components/ui/use-toast";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { useDeviceCache } from "@/hooks/useDeviceCache";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
-  const { data: devices, isLoading, error } = useDevices();
+  const { devices, removeDevice } = useDeviceCache();
   const { startScanning, isScanning } = useBLE();
   const { data: streamConnections } = useStreamConnections();
 
@@ -69,23 +70,20 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {isLoading ? (
-              <p>Loading devices...</p>
-            ) : devices ? (
-              devices.map((device) => (
-                <DeviceCard
-                  key={device.id}
-                  type={device.type}
-                  name={device.name}
-                  status={device.status}
-                  batteryLevel={device.battery_level}
-                  signalStrength={device.signal_strength}
-                  connectionType={device.connection_type}
-                  streamUrl={device.stream_url}
-                  bleId={device.ble_id}
-                />
-              ))
-            ) : null}
+            {devices.map((device) => (
+              <DeviceCard
+                key={device.id}
+                type={device.type}
+                name={device.name}
+                status={device.status}
+                batteryLevel={device.battery_level}
+                signalStrength={device.signal_strength}
+                connectionType={device.connection_type}
+                streamUrl={device.stream_url}
+                bleId={device.ble_id}
+                onDelete={() => removeDevice(device.id)}
+              />
+            ))}
           </div>
 
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
