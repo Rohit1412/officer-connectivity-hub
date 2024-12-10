@@ -18,9 +18,8 @@ import {
   Sidebar,
   SidebarHeader,
   SidebarContent,
-  SidebarNav,
-  SidebarNavLink,
 } from "@/components/ui/sidebar";
+import { SidebarNav, SidebarNavLink } from "@/components/ui/sidebar-nav";
 
 const navigationItems = [
   { title: "Main Dashboard", url: "/", icon: Activity },

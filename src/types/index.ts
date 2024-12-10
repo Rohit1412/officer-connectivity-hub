@@ -30,6 +30,7 @@ export interface Analytics {
 }
 
 export interface StreamConnection {
+  id: string;
   url: string;
   status: 'active' | 'inactive';
   last_ping: Date;
