@@ -9,7 +9,93 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      devices: {
+        Row: {
+          battery_level: number | null
+          ble_id: string | null
+          connection_type: string
+          created_at: string
+          id: string
+          name: string
+          signal_strength: number | null
+          status: string
+          stream_url: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          battery_level?: number | null
+          ble_id?: string | null
+          connection_type: string
+          created_at?: string
+          id?: string
+          name: string
+          signal_strength?: number | null
+          status: string
+          stream_url?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          battery_level?: number | null
+          ble_id?: string | null
+          connection_type?: string
+          created_at?: string
+          id?: string
+          name?: string
+          signal_strength?: number | null
+          status?: string
+          stream_url?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      stream_connections: {
+        Row: {
+          id: string
+          last_ping: string
+          status: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          last_ping?: string
+          status: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          last_ping?: string
+          status?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
