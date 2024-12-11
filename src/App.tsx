@@ -29,7 +29,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/auth" element={<Auth />} />
+            <Route path="/auth" element={<Navigate to="/" replace />} />
             <Route path="/" element={<Index />} />
             <Route path="/data" element={<DataManagement />} />
             <Route path="/devices" element={<DeviceManagement />} />
