@@ -2,10 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SessionContextProvider } from "@supabase/auth-helpers-react";
-import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import DataManagement from "./pages/DataManagement";
@@ -25,32 +23,30 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <SessionContextProvider supabaseClient={supabase}>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={<Index />} />
-              <Route path="/data" element={<DataManagement />} />
-              <Route path="/devices" element={<DeviceManagement />} />
-              <Route path="/analytics" element={<MLAnalytics />} />
-              <Route path="/live" element={<LiveStreaming />} />
-              <Route path="/alerts" element={<Alerts />} />
-              <Route path="/tracking" element={<OfficerTracking />} />
-              <Route path="/evidence" element={<DigitalEvidence />} />
-              <Route path="/security" element={<SecurityCenter />} />
-              <Route path="/docs" element={<Documentation />} />
-              <Route path="/crime-mapping" element={<CrimeMapping />} />
-              <Route path="/dispatch" element={<VehicleDispatch />} />
-              <Route path="/connection-history" element={<ConnectionHistory />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </SessionContextProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/data" element={<DataManagement />} />
+            <Route path="/devices" element={<DeviceManagement />} />
+            <Route path="/analytics" element={<MLAnalytics />} />
+            <Route path="/live" element={<LiveStreaming />} />
+            <Route path="/alerts" element={<Alerts />} />
+            <Route path="/tracking" element={<OfficerTracking />} />
+            <Route path="/evidence" element={<DigitalEvidence />} />
+            <Route path="/security" element={<SecurityCenter />} />
+            <Route path="/docs" element={<Documentation />} />
+            <Route path="/crime-mapping" element={<CrimeMapping />} />
+            <Route path="/dispatch" element={<VehicleDispatch />} />
+            <Route path="/connection-history" element={<ConnectionHistory />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
