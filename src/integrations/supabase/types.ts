@@ -56,18 +56,21 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           id: string
+          role: string | null
           username: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
           id: string
+          role?: string | null
           username?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
           id?: string
+          role?: string | null
           username?: string | null
         }
         Relationships: []
@@ -76,6 +79,7 @@ export type Database = {
         Row: {
           id: string
           last_ping: string
+          protocol: string | null
           status: string
           url: string
           user_id: string
@@ -83,6 +87,7 @@ export type Database = {
         Insert: {
           id?: string
           last_ping?: string
+          protocol?: string | null
           status: string
           url: string
           user_id: string
@@ -90,6 +95,7 @@ export type Database = {
         Update: {
           id?: string
           last_ping?: string
+          protocol?: string | null
           status?: string
           url?: string
           user_id?: string

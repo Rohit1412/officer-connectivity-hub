@@ -1,22 +1,45 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
+import { Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { Shield } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const AuthPage = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN') {
+        // Check if this is the admin email
+        if (session?.user?.email === 'admin@ipf.gov.in') {
+          // Update the user's role to admin
+          const { error } = await supabase
+            .from('profiles')
+            .update({ role: 'admin' })
+            .eq('id', session.user.id);
+
+          if (error) {
+            toast({
+              variant: "destructive",
+              title: "Error setting admin role",
+              description: error.message
+            });
+          } else {
+            toast({
+              title: "Admin account created",
+              description: "You have been granted admin privileges."
+            });
+          }
+        }
         navigate("/");
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -28,6 +51,9 @@ const AuthPage = () => {
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Command Center Access Portal
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Use admin@ipf.gov.in to create an admin account
           </p>
         </div>
         
