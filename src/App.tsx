@@ -24,8 +24,6 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -43,6 +41,8 @@ const App = () => (
             <Route path="/connection-history" element={<ConnectionHistory />} />
           </Routes>
         </BrowserRouter>
+        <Toaster />
+        <Sonner />
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

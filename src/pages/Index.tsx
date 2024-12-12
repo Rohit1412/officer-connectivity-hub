@@ -1,30 +1,23 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import DeviceCard from "@/components/DeviceCard";
 import VideoAnalysis from "@/components/VideoAnalysis";
 import AlertSystem from "@/components/AlertSystem";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Activity, Heart, Sun, Moon, Shield, LogOut } from "lucide-react";
+import { Activity, Heart, Sun, Moon, Shield } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import { useDevices, useStreamConnections } from "@/hooks/useSupabase";
+import { useDevices } from "@/hooks/useSupabase";
 import { useBLE } from "@/hooks/useBLE";
 import { toast } from "@/components/ui/use-toast";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { useDeviceCache } from "@/hooks/useDeviceCache";
-import { supabase } from "@/integrations/supabase/client";
-import { useSession } from "@supabase/auth-helpers-react";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
-  const { devices, removeDevice } = useDeviceCache();
+  const { data: devices, error } = useDevices();
   const { startScanning, isScanning } = useBLE();
-  const { data: streamConnections, error } = useStreamConnections();
-  const navigate = useNavigate();
-  const session = useSession();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (error) {
       toast({
         variant: "destructive",
@@ -34,21 +27,11 @@ const Index = () => {
     }
   }, [error]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth");
-  };
-
   const handleScanBLE = () => {
     if (!isScanning) {
       startScanning();
     }
   };
-
-  if (!session) {
-    navigate("/auth");
-    return null;
-  }
 
   return (
     <SidebarProvider>
@@ -63,26 +46,17 @@ const Index = () => {
                 <p className="text-secondary">Indian Police Force Command Center</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              >
-                {theme === "light" ? (
-                  <Moon className="h-5 w-5" />
-                ) : (
-                  <Sun className="h-5 w-5" />
-                )}
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            >
+              {theme === "light" ? (
+                <Moon className="h-5 w-5" />
+              ) : (
+                <Sun className="h-5 w-5" />
+              )}
+            </Button>
           </header>
 
           <div className="flex justify-between items-center mb-4">
@@ -93,7 +67,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {devices.map((device) => (
+            {devices?.map((device) => (
               <DeviceCard
                 key={device.id}
                 type={device.type}
@@ -104,7 +78,6 @@ const Index = () => {
                 connectionType={device.connection_type}
                 streamUrl={device.stream_url}
                 bleId={device.ble_id}
-                onDelete={() => removeDevice(device.id)}
               />
             ))}
           </div>
