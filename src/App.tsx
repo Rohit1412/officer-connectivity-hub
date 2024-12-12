@@ -17,6 +17,7 @@ import Documentation from "./pages/Documentation";
 import CrimeMapping from "./pages/CrimeMapping";
 import VehicleDispatch from "./pages/VehicleDispatch";
 import ConnectionHistory from "./pages/ConnectionHistory";
+import CameraConnections from "./pages/CameraConnections";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/crime-mapping" element={<CrimeMapping />} />
             <Route path="/dispatch" element={<VehicleDispatch />} />
             <Route path="/connection-history" element={<ConnectionHistory />} />
+            <Route path="/camera-connections" element={<CameraConnections />} />
           </Routes>
         </BrowserRouter>
         <Toaster />

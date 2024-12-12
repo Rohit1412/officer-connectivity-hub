@@ -78,6 +78,7 @@ export type Database = {
       stream_connections: {
         Row: {
           connection_name: string | null
+          created_at: string
           id: string
           is_active: boolean | null
           last_error: string | null
@@ -89,6 +90,7 @@ export type Database = {
         }
         Insert: {
           connection_name?: string | null
+          created_at?: string
           id?: string
           is_active?: boolean | null
           last_error?: string | null
@@ -100,6 +102,7 @@ export type Database = {
         }
         Update: {
           connection_name?: string | null
+          created_at?: string
           id?: string
           is_active?: boolean | null
           last_error?: string | null
