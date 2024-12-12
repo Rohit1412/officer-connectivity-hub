@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Camera, Plug, PlugOff, Save } from "lucide-react";
+import { Camera, Plug, Power, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface ConnectionBlockProps {
@@ -156,7 +156,7 @@ const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
               onClick={handleDisconnect}
               disabled={isConnecting}
             >
-              <PlugOff className="h-4 w-4 mr-2" />
+              <Power className="h-4 w-4 mr-2" />
               Disconnect
             </Button>
           ) : (
