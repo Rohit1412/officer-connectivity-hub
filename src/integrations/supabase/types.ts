@@ -21,7 +21,7 @@ export type Database = {
           status: string
           stream_url: string | null
           type: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           battery_level?: number | null
@@ -34,7 +34,7 @@ export type Database = {
           status: string
           stream_url?: string | null
           type: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           battery_level?: number | null
@@ -47,7 +47,7 @@ export type Database = {
           status?: string
           stream_url?: string | null
           type?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -82,7 +82,7 @@ export type Database = {
           protocol: string | null
           status: string
           url: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           id?: string
@@ -90,7 +90,7 @@ export type Database = {
           protocol?: string | null
           status: string
           url: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           id?: string
@@ -98,7 +98,7 @@ export type Database = {
           protocol?: string | null
           status?: string
           url?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
