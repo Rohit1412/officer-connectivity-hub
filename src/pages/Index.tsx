@@ -1,142 +1,55 @@
 import React from "react";
-import DeviceCard from "@/components/DeviceCard";
-import VideoAnalysis from "@/components/VideoAnalysis";
-import AlertSystem from "@/components/AlertSystem";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Activity, Heart, Sun, Moon, Shield } from "lucide-react";
-import { useTheme } from "@/components/theme-provider";
-import { useDevices } from "@/hooks/useSupabase";
-import { useBLE } from "@/hooks/useBLE";
-import { toast } from "@/components/ui/use-toast";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
+import { Plus } from "lucide-react";
+import ConnectionBlock from "@/components/camera/ConnectionBlock";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  const { theme, setTheme } = useTheme();
-  const { data: devices, error } = useDevices();
-  const { startScanning, isScanning } = useBLE();
+  const { data: connections, refetch } = useQuery({
+    queryKey: ["stream_connections"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stream_connections")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  React.useEffect(() => {
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error loading devices",
-        description: "Please try again later",
-      });
-    }
-  }, [error]);
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  const handleScanBLE = () => {
-    if (!isScanning) {
-      startScanning();
-    }
-  };
+  const [showNewConnection, setShowNewConnection] = React.useState(false);
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <AppSidebar />
-        <div className="flex-1 bg-background p-6 md:p-8">
-          <header className="mb-8 flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <Shield className="h-8 w-8 text-accent" />
-              <div>
-                <h1 className="text-3xl font-bold mb-2">भारतीय पुलिस बल डैशबोर्ड</h1>
-                <p className="text-secondary">Indian Police Force Command Center</p>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-            >
-              {theme === "light" ? (
-                <Moon className="h-5 w-5" />
-              ) : (
-                <Sun className="h-5 w-5" />
-              )}
-            </Button>
-          </header>
-
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">Connected Devices</h2>
-            <Button onClick={handleScanBLE} disabled={isScanning}>
-              {isScanning ? "Scanning..." : "Scan for BLE Devices"}
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {devices?.map((device) => (
-              <DeviceCard
-                key={device.id}
-                type={device.type}
-                name={device.name}
-                status={device.status}
-                batteryLevel={device.battery_level}
-                signalStrength={device.signal_strength}
-                connectionType={device.connection_type}
-                streamUrl={device.stream_url}
-                bleId={device.ble_id}
-              />
-            ))}
-          </div>
-
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <VideoAnalysis />
-            </div>
-            <div>
-              <AlertSystem />
-            </div>
-          </div>
-
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="p-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Heart className="w-5 h-5 text-accent" />
-                <h2 className="text-xl font-semibold">Officer Health Status</h2>
-              </div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-secondary">Heart Rate</span>
-                  <span className="font-medium">75 BPM</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-secondary">Blood Pressure</span>
-                  <span className="font-medium">120/80</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-secondary">Stress Level</span>
-                  <span className="font-medium">Normal</span>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Activity className="w-5 h-5 text-accent" />
-                <h2 className="text-xl font-semibold">Patrol Activity</h2>
-              </div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-secondary">Distance Covered</span>
-                  <span className="font-medium">3.2 km</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-secondary">Active Hours</span>
-                  <span className="font-medium">4.5 hrs</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-secondary">Area Coverage</span>
-                  <span className="font-medium">85%</span>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
+    <div className="container mx-auto p-4 space-y-4">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Camera Connections</h1>
+        <Button onClick={() => setShowNewConnection(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Connection
+        </Button>
       </div>
-    </SidebarProvider>
+
+      <div className="grid gap-4">
+        {showNewConnection && (
+          <ConnectionBlock
+            onSave={() => {
+              refetch();
+              setShowNewConnection(false);
+            }}
+          />
+        )}
+        
+        {connections?.map((connection) => (
+          <ConnectionBlock
+            key={connection.id}
+            connection={connection}
+            onSave={refetch}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
