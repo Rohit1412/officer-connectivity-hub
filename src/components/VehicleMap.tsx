@@ -8,8 +8,8 @@ import {
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-// Using a reliable GeoJSON source for India
-const geoUrl = "https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json";
+// Using a reliable GeoJSON source that's included in the project
+const geoUrl = "/india.json";
 
 // Updated coordinates for major Indian cities
 const vehicleData = [
@@ -61,36 +61,34 @@ const VehicleMap = () => {
           >
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies
-                  .filter(geo => geo.properties.name === "India")
-                  .map((geo) => (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      fill="#EAEAEC"
-                      stroke="#D6D6DA"
-                      style={{
-                        default: {
-                          fill: "#EAEAEC",
-                          stroke: "#D6D6DA",
-                          strokeWidth: 0.75,
-                          outline: "none",
-                        },
-                        hover: {
-                          fill: "#F5F5F5",
-                          stroke: "#D6D6DA",
-                          strokeWidth: 1,
-                          outline: "none",
-                        },
-                        pressed: {
-                          fill: "#E5E5E5",
-                          stroke: "#D6D6DA",
-                          strokeWidth: 1,
-                          outline: "none",
-                        },
-                      }}
-                    />
-                  ))
+                geographies.map((geo) => (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill="#EAEAEC"
+                    stroke="#D6D6DA"
+                    style={{
+                      default: {
+                        fill: "#EAEAEC",
+                        stroke: "#D6D6DA",
+                        strokeWidth: 0.75,
+                        outline: "none",
+                      },
+                      hover: {
+                        fill: "#F5F5F5",
+                        stroke: "#D6D6DA",
+                        strokeWidth: 1,
+                        outline: "none",
+                      },
+                      pressed: {
+                        fill: "#E5E5E5",
+                        stroke: "#D6D6DA",
+                        strokeWidth: 1,
+                        outline: "none",
+                      },
+                    }}
+                  />
+                ))
               }
             </Geographies>
             {vehicleData.map((vehicle) => (
