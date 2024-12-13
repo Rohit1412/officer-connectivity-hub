@@ -8,8 +8,8 @@ import {
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-// Using a reliable TopoJSON source for India
-const geoUrl = "https://raw.githubusercontent.com/deldersveld/topojson/master/continents/asia.json";
+// Using a reliable GeoJSON source for India
+const geoUrl = "https://cdn.jsdelivr.net/npm/@svg-maps/india@1.0.1/india.json";
 
 // Updated coordinates for major Indian cities
 const vehicleData = [
@@ -55,7 +55,7 @@ const VehicleMap = () => {
           <ComposableMap
             projection="geoMercator"
             projectionConfig={{
-              scale: 600,
+              scale: 1000,
               center: [78.9629, 22.5937] // Centered on India
             }}
           >
