@@ -5,8 +5,22 @@ import { ArrowLeft, Plus } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import ConnectionBlock from "@/components/camera/ConnectionBlock";
+import VideoPreview from "@/components/video/VideoPreview";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+
+const TEST_STREAMS = [
+  {
+    name: "Big Buck Bunny (HLS)",
+    url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    protocol: "hls"
+  },
+  {
+    name: "Test Pattern (HTTP)",
+    url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
+    protocol: "http"
+  }
+];
 
 const LiveStreaming = () => {
   const navigate = useNavigate();
@@ -25,6 +39,26 @@ const LiveStreaming = () => {
   });
 
   const [showNewConnection, setShowNewConnection] = React.useState(false);
+
+  const handleQuickAdd = async (stream: typeof TEST_STREAMS[0]) => {
+    try {
+      await supabase
+        .from("stream_connections")
+        .upsert({
+          url: stream.url,
+          protocol: stream.protocol,
+          connection_name: stream.name,
+          status: "connected",
+          is_active: true,
+        })
+        .select()
+        .single();
+
+      refetch();
+    } catch (error) {
+      console.error("Error adding test stream:", error);
+    }
+  };
 
   return (
     <SidebarProvider>
@@ -50,6 +84,24 @@ const LiveStreaming = () => {
             </p>
 
             <div className="grid gap-4">
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h2 className="text-lg font-semibold mb-4">Test Streams</h2>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {TEST_STREAMS.map((stream) => (
+                    <div key={stream.url} className="bg-card p-4 rounded-lg">
+                      <h3 className="font-medium mb-2">{stream.name}</h3>
+                      <VideoPreview url={stream.url} protocol={stream.protocol} />
+                      <Button 
+                        className="mt-4 w-full"
+                        onClick={() => handleQuickAdd(stream)}
+                      >
+                        Add Test Stream
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {showNewConnection && (
                 <ConnectionBlock
                   onSave={() => {
@@ -60,11 +112,16 @@ const LiveStreaming = () => {
               )}
 
               {connections?.map((connection) => (
-                <ConnectionBlock
-                  key={connection.id}
-                  connection={connection}
-                  onSave={refetch}
-                />
+                <div key={connection.id} className="space-y-4">
+                  <ConnectionBlock
+                    connection={connection}
+                    onSave={refetch}
+                  />
+                  <VideoPreview 
+                    url={connection.url} 
+                    protocol={connection.protocol} 
+                  />
+                </div>
               ))}
             </div>
           </div>
