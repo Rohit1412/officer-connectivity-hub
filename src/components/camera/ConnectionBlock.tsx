@@ -28,7 +28,7 @@ interface ConnectionBlockProps {
 
 const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
   const [url, setUrl] = useState(connection?.url || "");
-  const [protocol, setProtocol] = useState(connection?.protocol || "rtsp");
+  const [protocol, setProtocol] = useState(connection?.protocol || "http");
   const [name, setName] = useState(connection?.connection_name || "");
   const [isConnecting, setIsConnecting] = useState(false);
   const { toast } = useToast();
@@ -66,6 +66,7 @@ const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
       
       if (onSave) onSave();
     } catch (error) {
+      console.error("Connection error:", error);
       toast({
         title: "Error",
         description: "Failed to connect to camera",
@@ -97,6 +98,7 @@ const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
       
       if (onSave) onSave();
     } catch (error) {
+      console.error("Disconnection error:", error);
       toast({
         title: "Error",
         description: "Failed to disconnect camera",
@@ -137,8 +139,10 @@ const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
             <SelectContent>
               <SelectItem value="rtsp">RTSP</SelectItem>
               <SelectItem value="http">HTTP</SelectItem>
-              <SelectItem value="webrtc">WebRTC</SelectItem>
+              <SelectItem value="https">HTTPS</SelectItem>
+              <SelectItem value="rtmp">RTMP</SelectItem>
               <SelectItem value="hls">HLS</SelectItem>
+              <SelectItem value="webrtc">WebRTC</SelectItem>
             </SelectContent>
           </Select>
           <Input

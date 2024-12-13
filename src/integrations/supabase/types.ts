@@ -83,7 +83,7 @@ export type Database = {
           is_active: boolean | null
           last_error: string | null
           last_ping: string
-          protocol: string | null
+          protocol: string
           status: string
           url: string
           user_id: string | null
@@ -95,7 +95,7 @@ export type Database = {
           is_active?: boolean | null
           last_error?: string | null
           last_ping?: string
-          protocol?: string | null
+          protocol: string
           status: string
           url: string
           user_id?: string | null
@@ -107,7 +107,7 @@ export type Database = {
           is_active?: boolean | null
           last_error?: string | null
           last_ping?: string
-          protocol?: string | null
+          protocol?: string
           status?: string
           url?: string
           user_id?: string | null
