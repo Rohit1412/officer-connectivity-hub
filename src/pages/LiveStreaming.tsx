@@ -13,23 +13,23 @@ import { Card } from "@/components/ui/card";
 
 const TEST_STREAMS = [
   {
-    name: "NASA Live Stream",
-    url: "https://nasa-live.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8",
+    name: "Big Buck Bunny (HLS)",
+    url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
     protocol: "hls"
   },
   {
-    name: "Red Bull TV",
-    url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
+    name: "Apple Advanced Stream",
+    url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8",
     protocol: "hls"
   },
   {
-    name: "Bloomberg TV",
-    url: "https://bloomberg-bloomberg-1-eu.rakuten.wurl.tv/playlist.m3u8",
+    name: "Low Latency Test",
+    url: "https://test-streams.mux.dev/test.m3u8",
     protocol: "hls"
   },
   {
-    name: "Weather Channel",
-    url: "https://weather-lh.akamaihd.net/i/twc_1@92006/master.m3u8",
+    name: "Live Test Stream",
+    url: "https://cdn.jwplayer.com/manifests/pZxWPRg4.m3u8",
     protocol: "hls"
   }
 ];

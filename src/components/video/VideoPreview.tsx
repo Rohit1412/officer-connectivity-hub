@@ -18,62 +18,105 @@ const VideoPreview = ({ url, protocol, onDelete }: VideoPreviewProps) => {
   const hlsRef = useRef<Hls | null>(null);
 
   useEffect(() => {
-    if (videoRef.current && url) {
-      const video = videoRef.current;
+    if (!videoRef.current || !url) return;
 
-      if (protocol === "hls" && Hls.isSupported()) {
-        // Cleanup previous HLS instance
-        if (hlsRef.current) {
-          hlsRef.current.destroy();
-        }
+    const video = videoRef.current;
+    let hls: Hls | null = null;
 
-        // Create new HLS instance
-        const hls = new Hls({
+    const initializeHls = () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+      }
+
+      if (Hls.isSupported()) {
+        hls = new Hls({
+          debug: true,
           enableWorker: true,
           lowLatencyMode: true,
+          backBufferLength: 90,
+          maxBufferLength: 30,
+          maxMaxBufferLength: 600,
+          maxBufferSize: 60 * 1000 * 1000,
+          maxBufferHole: 0.5,
+          highBufferWatchdogPeriod: 2,
+          nudgeOffset: 0.1,
+          nudgeMaxRetry: 5,
         });
-        hlsRef.current = hls;
 
-        hls.loadSource(url);
+        hlsRef.current = hls;
         hls.attachMedia(video);
 
+        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+          console.log("HLS Media attached");
+          hls?.loadSource(url);
+        });
+
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          console.log("HLS Manifest parsed");
           video.play().catch((e) => {
             console.error("Error auto-playing video:", e);
+            setError("Failed to auto-play video");
           });
         });
 
         hls.on(Hls.Events.ERROR, (event, data) => {
+          console.error("HLS error:", data);
           if (data.fatal) {
-            setError(`Stream error: ${data.type}`);
-            console.error('HLS error:', data);
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                console.log("Fatal network error encountered, trying to recover...");
+                hls?.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                console.log("Fatal media error encountered, trying to recover...");
+                hls?.recoverMediaError();
+                break;
+              default:
+                console.log("Fatal error, cannot recover");
+                hls?.destroy();
+                setError(`Stream error: ${data.type}`);
+                break;
+            }
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         // For Safari which has built-in HLS support
         video.src = url;
-        video.play().catch((e) => {
-          console.error("Error auto-playing video:", e);
+        video.addEventListener('loadedmetadata', () => {
+          video.play().catch((e) => {
+            console.error("Error auto-playing video:", e);
+            setError("Failed to auto-play video");
+          });
         });
+      } else {
+        setError("HLS is not supported in this browser");
       }
+    };
 
-      video.addEventListener('playing', () => setIsPlaying(true));
-      video.addEventListener('pause', () => setIsPlaying(false));
-      video.addEventListener('error', () => {
-        setError('Failed to load video stream');
-        setIsPlaying(false);
-      });
+    initializeHls();
 
-      return () => {
-        video.removeEventListener('playing', () => setIsPlaying(true));
-        video.removeEventListener('pause', () => setIsPlaying(false));
-        video.removeEventListener('error', () => setIsPlaying(false));
-        if (hlsRef.current) {
-          hlsRef.current.destroy();
-        }
-      };
-    }
-  }, [url, protocol]);
+    video.addEventListener('playing', () => {
+      setIsPlaying(true);
+      setError(null);
+    });
+
+    video.addEventListener('pause', () => setIsPlaying(false));
+    video.addEventListener('error', (e) => {
+      console.error('Video error:', e);
+      setError('Failed to load video stream');
+      setIsPlaying(false);
+    });
+
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+      video.removeEventListener('playing', () => setIsPlaying(true));
+      video.removeEventListener('pause', () => setIsPlaying(false));
+      video.removeEventListener('error', () => setIsPlaying(false));
+    };
+  }, [url]);
 
   if (!url) {
     return (
@@ -98,7 +141,7 @@ const VideoPreview = ({ url, protocol, onDelete }: VideoPreviewProps) => {
       <div className="relative">
         <video
           ref={videoRef}
-          className="w-full rounded-lg"
+          className="w-full rounded-lg bg-black"
           controls
           playsInline
           autoPlay
@@ -109,16 +152,21 @@ const VideoPreview = ({ url, protocol, onDelete }: VideoPreviewProps) => {
         </video>
         {error && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
-            <VideoOff className="w-8 h-8 text-white" />
+            <div className="text-center p-4">
+              <VideoOff className="w-8 h-8 text-white mx-auto mb-2" />
+              <p className="text-white text-sm">{error}</p>
+            </div>
           </div>
         )}
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-between items-center">
+        <p className="text-sm text-muted-foreground">
+          {isPlaying ? "Stream is playing" : "Stream is not playing"}
+        </p>
         <Button
           variant="destructive"
           size="sm"
           onClick={handleDelete}
-          className="mt-2"
         >
           Delete Connection
         </Button>
