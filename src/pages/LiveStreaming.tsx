@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Plus } from "lucide-react";
@@ -6,8 +6,9 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import ConnectionBlock from "@/components/camera/ConnectionBlock";
 import VideoPreview from "@/components/video/VideoPreview";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const TEST_STREAMS = [
   {
@@ -24,6 +25,9 @@ const TEST_STREAMS = [
 
 const LiveStreaming = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [showNewConnection, setShowNewConnection] = useState(false);
 
   const { data: connections, refetch } = useQuery({
     queryKey: ["stream_connections"],
@@ -38,7 +42,31 @@ const LiveStreaming = () => {
     },
   });
 
-  const [showNewConnection, setShowNewConnection] = React.useState(false);
+  const deleteConnection = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("stream_connections")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["stream_connections"] });
+      toast({
+        title: "Success",
+        description: "Connection deleted successfully",
+      });
+    },
+    onError: (error) => {
+      console.error("Delete error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete connection",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleQuickAdd = async (stream: typeof TEST_STREAMS[0]) => {
     try {
@@ -55,8 +83,17 @@ const LiveStreaming = () => {
         .single();
 
       refetch();
+      toast({
+        title: "Success",
+        description: "Test stream added successfully",
+      });
     } catch (error) {
       console.error("Error adding test stream:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add test stream",
+        variant: "destructive",
+      });
     }
   };
 
@@ -119,7 +156,8 @@ const LiveStreaming = () => {
                   />
                   <VideoPreview 
                     url={connection.url} 
-                    protocol={connection.protocol} 
+                    protocol={connection.protocol}
+                    onDelete={() => deleteConnection.mutate(connection.id)}
                   />
                 </div>
               ))}
