@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,12 @@ import { Activity, AlertTriangle, Camera, Shield } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [activeOfficers, setActiveOfficers] = useState(24);
+  const [liveFeeds, setLiveFeeds] = useState(0);
+  const [activeAlerts, setActiveAlerts] = useState(0);
+  const [securityStatus, setSecurityStatus] = useState("Normal");
 
+  // Query for initial live feeds count
   const { data: devices } = useQuery({
     queryKey: ["devices"],
     queryFn: async () => {
@@ -30,6 +35,67 @@ const Index = () => {
       return data;
     },
   });
+
+  // Subscribe to real-time updates for stream connections
+  useEffect(() => {
+    const channel = supabase
+      .channel('stream-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'stream_connections'
+        },
+        (payload) => {
+          // Update live feeds count
+          supabase
+            .from('stream_connections')
+            .select('*', { count: 'exact' })
+            .eq('is_active', true)
+            .then(({ count }) => {
+              setLiveFeeds(count || 0);
+            });
+        }
+      )
+      .subscribe();
+
+    // Initial count of live feeds
+    supabase
+      .from('stream_connections')
+      .select('*', { count: 'exact' })
+      .eq('is_active', true)
+      .then(({ count }) => {
+        setLiveFeeds(count || 0);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Simulate real-time alerts (since we don't have an alerts table yet)
+  useEffect(() => {
+    const alertInterval = setInterval(() => {
+      setActiveAlerts((prev) => {
+        const randomChange = Math.random() > 0.5 ? 1 : -1;
+        return Math.max(0, prev + randomChange);
+      });
+    }, 5000);
+
+    return () => clearInterval(alertInterval);
+  }, []);
+
+  // Update security status based on active alerts
+  useEffect(() => {
+    if (activeAlerts > 5) {
+      setSecurityStatus("Critical");
+    } else if (activeAlerts > 2) {
+      setSecurityStatus("Warning");
+    } else {
+      setSecurityStatus("Normal");
+    }
+  }, [activeAlerts]);
 
   return (
     <SidebarProvider>
@@ -55,28 +121,34 @@ const Index = () => {
                   <Activity className="w-4 h-4 text-accent" />
                   <span>Active Officers</span>
                 </div>
-                <p className="text-2xl font-bold mt-2">24</p>
+                <p className="text-2xl font-bold mt-2">{activeOfficers}</p>
               </Card>
               <Card className="p-4 hover:shadow-lg transition-all">
                 <div className="flex items-center space-x-2">
                   <Camera className="w-4 h-4 text-accent" />
                   <span>Live Feeds</span>
                 </div>
-                <p className="text-2xl font-bold mt-2">12</p>
+                <p className="text-2xl font-bold mt-2">{liveFeeds}</p>
               </Card>
               <Card className="p-4 hover:shadow-lg transition-all">
                 <div className="flex items-center space-x-2">
                   <AlertTriangle className="w-4 h-4 text-warning" />
                   <span>Active Alerts</span>
                 </div>
-                <p className="text-2xl font-bold mt-2">3</p>
+                <p className="text-2xl font-bold mt-2">{activeAlerts}</p>
               </Card>
               <Card className="p-4 hover:shadow-lg transition-all">
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4 text-accent" />
                   <span>Security Status</span>
                 </div>
-                <p className="text-2xl font-bold mt-2">Normal</p>
+                <p className={`text-2xl font-bold mt-2 ${
+                  securityStatus === "Critical" ? "text-destructive" :
+                  securityStatus === "Warning" ? "text-warning" :
+                  "text-accent"
+                }`}>
+                  {securityStatus}
+                </p>
               </Card>
             </div>
 
