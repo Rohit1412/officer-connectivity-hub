@@ -9,17 +9,28 @@ import VideoPreview from "@/components/video/VideoPreview";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Card } from "@/components/ui/card";
 
 const TEST_STREAMS = [
   {
-    name: "Big Buck Bunny (HLS)",
+    name: "NASA Live Stream",
+    url: "https://nasa-live.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8",
+    protocol: "hls"
+  },
+  {
+    name: "Big Buck Bunny",
     url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
     protocol: "hls"
   },
   {
-    name: "Test Pattern (HTTP)",
-    url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
-    protocol: "http"
+    name: "RTSP Test Stream",
+    url: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4",
+    protocol: "rtsp"
+  },
+  {
+    name: "RTMP Test Stream",
+    url: "rtmp://stream.example.com/live/stream1",
+    protocol: "rtmp"
   }
 ];
 
@@ -125,16 +136,21 @@ const LiveStreaming = () => {
                 <h2 className="text-lg font-semibold mb-4">Test Streams</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   {TEST_STREAMS.map((stream) => (
-                    <div key={stream.url} className="bg-card p-4 rounded-lg">
+                    <Card key={stream.url} className="p-4">
                       <h3 className="font-medium mb-2">{stream.name}</h3>
-                      <VideoPreview url={stream.url} protocol={stream.protocol} />
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Protocol: {stream.protocol.toUpperCase()}
+                      </p>
+                      <p className="text-sm text-muted-foreground mb-4 break-all">
+                        URL: {stream.url}
+                      </p>
                       <Button 
-                        className="mt-4 w-full"
+                        className="w-full"
                         onClick={() => handleQuickAdd(stream)}
                       >
                         Add Test Stream
                       </Button>
-                    </div>
+                    </Card>
                   ))}
                 </div>
               </div>
