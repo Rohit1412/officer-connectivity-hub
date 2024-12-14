@@ -18,19 +18,19 @@ const TEST_STREAMS = [
     protocol: "hls"
   },
   {
-    name: "Big Buck Bunny",
-    url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    name: "Red Bull TV",
+    url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
     protocol: "hls"
   },
   {
-    name: "RTSP Test Stream",
-    url: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4",
-    protocol: "rtsp"
+    name: "Bloomberg TV",
+    url: "https://bloomberg-bloomberg-1-eu.rakuten.wurl.tv/playlist.m3u8",
+    protocol: "hls"
   },
   {
-    name: "RTMP Test Stream",
-    url: "rtmp://stream.example.com/live/stream1",
-    protocol: "rtmp"
+    name: "Weather Channel",
+    url: "https://weather-lh.akamaihd.net/i/twc_1@92006/master.m3u8",
+    protocol: "hls"
   }
 ];
 
