@@ -11,7 +11,7 @@ interface VideoPreviewProps {
   onDelete?: () => void;
 }
 
-const VideoPreview = ({ url, protocol, onDelete }: VideoPreviewProps) => {
+const VideoPreview = ({ url, protocol = 'hls', onDelete }: VideoPreviewProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -39,6 +39,7 @@ const VideoPreview = ({ url, protocol, onDelete }: VideoPreviewProps) => {
       <div className="relative">
         <HLSPlayer 
           url={url}
+          protocol={protocol}
           onPlayingStateChange={setIsPlaying}
           onError={setError}
         />

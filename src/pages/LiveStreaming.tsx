@@ -18,17 +18,17 @@ const TEST_STREAMS = [
     protocol: "hls"
   },
   {
-    name: "Apple Advanced Stream",
-    url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8",
-    protocol: "hls"
+    name: "HTTP Stream Example",
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    protocol: "http"
   },
   {
-    name: "Low Latency Test",
-    url: "https://test-streams.mux.dev/test.m3u8",
-    protocol: "hls"
+    name: "HTTPS Stream Example",
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    protocol: "https"
   },
   {
-    name: "Live Test Stream",
+    name: "Live Test Stream (HLS)",
     url: "https://cdn.jwplayer.com/manifests/pZxWPRg4.m3u8",
     protocol: "hls"
   }
