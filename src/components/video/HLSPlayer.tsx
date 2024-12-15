@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
-import { VideoOff } from "lucide-react";
 
 interface HLSPlayerProps {
   url: string;
@@ -25,11 +24,25 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
     }
 
     const initializeStream = () => {
+      // Handle local IP camera streams
+      if (url.includes('192.168.') || url.includes('localhost') || url.includes('127.0.0.1')) {
+        console.log("Local network stream detected");
+        // Ensure URL has proper protocol
+        const streamUrl = url.startsWith('http') ? url : `http://${url}`;
+        video.src = streamUrl;
+        video.crossOrigin = "anonymous"; // Add CORS header
+        video.play().catch((e) => {
+          console.error("Error playing local stream:", e);
+          onError("Unable to connect to local camera. Please ensure the camera is accessible and CORS is enabled.");
+        });
+        return;
+      }
+
       // Handle HLS streams
       if (protocol === 'hls') {
         if (Hls.isSupported()) {
           const hls = new Hls({
-            debug: true,
+            debug: false,
             enableWorker: true,
             lowLatencyMode: true,
             backBufferLength: 90,
@@ -54,12 +67,11 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
             console.log("HLS Manifest parsed");
             video.play().catch((e) => {
               console.error("Error auto-playing video:", e);
-              onError("Failed to auto-play video");
+              onError("Failed to auto-play video. Please check your browser's autoplay settings.");
             });
           });
 
           hls.on(Hls.Events.ERROR, (event, data) => {
-            console.error("HLS error:", data);
             if (data.fatal) {
               switch (data.type) {
                 case Hls.ErrorTypes.NETWORK_ERROR:
@@ -73,7 +85,7 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
                 default:
                   console.log("Fatal error, cannot recover");
                   hls.destroy();
-                  onError(`Stream error: ${data.type}`);
+                  onError(`Stream error: ${data.details}`);
                   break;
               }
             }
@@ -91,9 +103,10 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
       // Handle HTTP/HTTPS direct video streams
       else if (protocol === 'http' || protocol === 'https') {
         video.src = url;
+        video.crossOrigin = "anonymous"; // Add CORS header
         video.play().catch((e) => {
           console.error("Error playing HTTP stream:", e);
-          onError("Failed to play HTTP stream");
+          onError("Failed to play stream. Please check if the URL is accessible and the format is supported.");
         });
       }
       // Handle unsupported protocols
@@ -119,7 +132,7 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
 
     const handleError = (e: Event) => {
       console.error('Video error:', e);
-      onError('Failed to load video stream');
+      onError('Failed to load video stream. Please check the URL and ensure the stream is accessible.');
       onPlayingStateChange(false);
     };
 
