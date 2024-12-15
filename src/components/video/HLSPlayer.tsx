@@ -24,17 +24,40 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
     }
 
     const initializeStream = () => {
-      // Handle local IP camera streams
+      // Handle DroidCam and local IP camera streams
       if (url.includes('192.168.') || url.includes('localhost') || url.includes('127.0.0.1')) {
-        console.log("Local network stream detected");
+        console.log("DroidCam/Local network stream detected");
+        
+        // For DroidCam, we need to ensure we're using the video endpoint
+        let streamUrl = url;
+        if (url.includes('4747') && !url.includes('/video')) {
+          streamUrl = `${url.replace(/\/?$/, '')}/video`;
+        }
+        
         // Ensure URL has proper protocol
-        const streamUrl = url.startsWith('http') ? url : `http://${url}`;
-        video.src = streamUrl;
-        video.crossOrigin = "anonymous"; // Add CORS header
-        video.play().catch((e) => {
-          console.error("Error playing local stream:", e);
-          onError("Unable to connect to local camera. Please ensure the camera is accessible and CORS is enabled.");
-        });
+        streamUrl = streamUrl.startsWith('http') ? streamUrl : `http://${streamUrl}`;
+        console.log("Attempting to connect to:", streamUrl);
+        
+        // For DroidCam MJPEG streams
+        try {
+          const img = new Image();
+          img.onload = () => {
+            // If image loads successfully, it's likely a valid MJPEG stream
+            video.src = streamUrl;
+            video.play().catch((e) => {
+              console.error("Error playing DroidCam stream:", e);
+              onError("If using DroidCam, please ensure:\n1. DroidCam app is running\n2. Phone and computer are on same network\n3. Using correct IP:port (check DroidCam app)");
+            });
+          };
+          img.onerror = () => {
+            onError("Cannot connect to DroidCam. Please verify:\n1. DroidCam app is running\n2. IP address is correct\n3. Port 4747 is open");
+          };
+          // Test connection by loading a single frame
+          img.src = streamUrl;
+        } catch (e) {
+          console.error("Error setting up DroidCam stream:", e);
+          onError("Failed to connect to DroidCam. Please check your connection settings.");
+        }
         return;
       }
 
@@ -132,7 +155,6 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
 
     const handleError = (e: Event) => {
       console.error('Video error:', e);
-      onError('Failed to load video stream. Please check the URL and ensure the stream is accessible.');
       onPlayingStateChange(false);
     };
 
