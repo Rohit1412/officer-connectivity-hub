@@ -5,39 +5,13 @@ import { ArrowLeft, Plus } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import ConnectionBlock from "@/components/camera/ConnectionBlock";
-import VideoPreview from "@/components/video/VideoPreview";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
-import { Card } from "@/components/ui/card";
-
-const TEST_STREAMS = [
-  {
-    name: "Big Buck Bunny (HLS)",
-    url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-    protocol: "hls"
-  },
-  {
-    name: "HTTP Stream Example",
-    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    protocol: "http"
-  },
-  {
-    name: "HTTPS Stream Example",
-    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    protocol: "https"
-  },
-  {
-    name: "Live Test Stream (HLS)",
-    url: "https://cdn.jwplayer.com/manifests/pZxWPRg4.m3u8",
-    protocol: "hls"
-  }
-];
+import TestStreamsSection from "@/components/streaming/TestStreamsSection";
+import StreamsList from "@/components/streaming/StreamsList";
 
 const LiveStreaming = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
   const [showNewConnection, setShowNewConnection] = useState(false);
 
   const { data: connections, refetch } = useQuery({
@@ -52,61 +26,6 @@ const LiveStreaming = () => {
       return data;
     },
   });
-
-  const deleteConnection = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("stream_connections")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["stream_connections"] });
-      toast({
-        title: "Success",
-        description: "Connection deleted successfully",
-      });
-    },
-    onError: (error) => {
-      console.error("Delete error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete connection",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleQuickAdd = async (stream: typeof TEST_STREAMS[0]) => {
-    try {
-      await supabase
-        .from("stream_connections")
-        .upsert({
-          url: stream.url,
-          protocol: stream.protocol,
-          connection_name: stream.name,
-          status: "connected",
-          is_active: true,
-        })
-        .select()
-        .single();
-
-      refetch();
-      toast({
-        title: "Success",
-        description: "Test stream added successfully",
-      });
-    } catch (error) {
-      console.error("Error adding test stream:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add test stream",
-        variant: "destructive",
-      });
-    }
-  };
 
   return (
     <SidebarProvider>
@@ -132,28 +51,7 @@ const LiveStreaming = () => {
             </p>
 
             <div className="grid gap-4">
-              <div className="bg-muted/50 p-4 rounded-lg">
-                <h2 className="text-lg font-semibold mb-4">Test Streams</h2>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {TEST_STREAMS.map((stream) => (
-                    <Card key={stream.url} className="p-4">
-                      <h3 className="font-medium mb-2">{stream.name}</h3>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Protocol: {stream.protocol.toUpperCase()}
-                      </p>
-                      <p className="text-sm text-muted-foreground mb-4 break-all">
-                        URL: {stream.url}
-                      </p>
-                      <Button 
-                        className="w-full"
-                        onClick={() => handleQuickAdd(stream)}
-                      >
-                        Add Test Stream
-                      </Button>
-                    </Card>
-                  ))}
-                </div>
-              </div>
+              <TestStreamsSection onStreamAdd={refetch} />
 
               {showNewConnection && (
                 <ConnectionBlock
@@ -164,19 +62,10 @@ const LiveStreaming = () => {
                 />
               )}
 
-              {connections?.map((connection) => (
-                <div key={connection.id} className="space-y-4">
-                  <ConnectionBlock
-                    connection={connection}
-                    onSave={refetch}
-                  />
-                  <VideoPreview 
-                    url={connection.url} 
-                    protocol={connection.protocol}
-                    onDelete={() => deleteConnection.mutate(connection.id)}
-                  />
-                </div>
-              ))}
+              <StreamsList 
+                connections={connections || []} 
+                onRefetch={refetch}
+              />
             </div>
           </div>
         </div>
