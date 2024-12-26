@@ -12,6 +12,33 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
 
+  const formatUrl = (inputUrl: string): string => {
+    try {
+      // Remove any trailing colons that aren't part of the protocol
+      let cleanUrl = inputUrl.replace(/:+$/, '');
+      
+      // For local/DroidCam URLs
+      if (cleanUrl.includes('192.168.') || cleanUrl.includes('localhost') || cleanUrl.includes('127.0.0.1')) {
+        // Ensure proper protocol
+        if (!cleanUrl.startsWith('http')) {
+          cleanUrl = `http://${cleanUrl}`;
+        }
+        // Add /video endpoint for DroidCam if needed
+        if (cleanUrl.includes('4747') && !cleanUrl.includes('/video')) {
+          cleanUrl = `${cleanUrl.replace(/\/?$/, '')}/video`;
+        }
+      }
+      
+      // Validate URL format
+      new URL(cleanUrl);
+      return cleanUrl;
+    } catch (e) {
+      console.error("Invalid URL format:", e);
+      onError("Invalid URL format. Please check the stream URL.");
+      return "";
+    }
+  };
+
   useEffect(() => {
     if (!videoRef.current || !url) return;
 
@@ -23,27 +50,19 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
       hlsRef.current = null;
     }
 
+    const formattedUrl = formatUrl(url);
+    if (!formattedUrl) return;
+
     const initializeStream = () => {
       // Handle DroidCam and local IP camera streams
-      if (url.includes('192.168.') || url.includes('localhost') || url.includes('127.0.0.1')) {
+      if (formattedUrl.includes('192.168.') || formattedUrl.includes('localhost') || formattedUrl.includes('127.0.0.1')) {
         console.log("DroidCam/Local network stream detected");
+        console.log("Attempting to connect to:", formattedUrl);
         
-        // For DroidCam, we need to ensure we're using the video endpoint
-        let streamUrl = url;
-        if (url.includes('4747') && !url.includes('/video')) {
-          streamUrl = `${url.replace(/\/?$/, '')}/video`;
-        }
-        
-        // Ensure URL has proper protocol
-        streamUrl = streamUrl.startsWith('http') ? streamUrl : `http://${streamUrl}`;
-        console.log("Attempting to connect to:", streamUrl);
-        
-        // For DroidCam MJPEG streams
         try {
           const img = new Image();
           img.onload = () => {
-            // If image loads successfully, it's likely a valid MJPEG stream
-            video.src = streamUrl;
+            video.src = formattedUrl;
             video.play().catch((e) => {
               console.error("Error playing DroidCam stream:", e);
               onError("If using DroidCam, please ensure:\n1. DroidCam app is running\n2. Phone and computer are on same network\n3. Using correct IP:port (check DroidCam app)");
@@ -52,8 +71,7 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
           img.onerror = () => {
             onError("Cannot connect to DroidCam. Please verify:\n1. DroidCam app is running\n2. IP address is correct\n3. Port 4747 is open");
           };
-          // Test connection by loading a single frame
-          img.src = streamUrl;
+          img.src = formattedUrl;
         } catch (e) {
           console.error("Error setting up DroidCam stream:", e);
           onError("Failed to connect to DroidCam. Please check your connection settings.");
@@ -83,7 +101,7 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
 
           hls.on(Hls.Events.MEDIA_ATTACHED, () => {
             console.log("HLS Media attached");
-            hls.loadSource(url);
+            hls.loadSource(formattedUrl);
           });
 
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -114,7 +132,7 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
             }
           });
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = url;
+          video.src = formattedUrl;
           video.addEventListener('loadedmetadata', () => {
             video.play().catch((e) => {
               console.error("Error auto-playing video:", e);
@@ -125,8 +143,7 @@ const HLSPlayer = ({ url, protocol = 'hls', onPlayingStateChange, onError }: HLS
       } 
       // Handle HTTP/HTTPS direct video streams
       else if (protocol === 'http' || protocol === 'https') {
-        video.src = url;
-        video.crossOrigin = "anonymous"; // Add CORS header
+        video.src = formattedUrl;
         video.play().catch((e) => {
           console.error("Error playing HTTP stream:", e);
           onError("Failed to play stream. Please check if the URL is accessible and the format is supported.");
