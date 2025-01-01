@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Camera, Plug, Power, Save } from "lucide-react";
+import { Camera, Plug, Power, Save, Usb } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface ConnectionBlockProps {
@@ -34,7 +34,20 @@ const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
   const { toast } = useToast();
 
   const handleConnect = async () => {
-    if (!url) {
+    if (protocol === 'usb') {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream.getTracks().forEach(track => track.stop());
+        setUrl('usb://local');
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to access USB camera",
+          variant: "destructive",
+        });
+        return;
+      }
+    } else if (!url) {
       toast({
         title: "Error",
         description: "Please enter a URL",
@@ -48,7 +61,7 @@ const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
       const { error } = await supabase
         .from("stream_connections")
         .upsert({
-          url,
+          url: protocol === 'usb' ? 'usb://local' : url,
           protocol,
           connection_name: name,
           status: "connected",
@@ -111,7 +124,11 @@ const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
     <Card className="p-4 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Camera className="h-5 w-5" />
+          {protocol === 'usb' ? (
+            <Usb className="h-5 w-5" />
+          ) : (
+            <Camera className="h-5 w-5" />
+          )}
           <h3 className="font-medium">Camera Connection</h3>
         </div>
         <Badge
@@ -143,14 +160,17 @@ const ConnectionBlock = ({ connection, onSave }: ConnectionBlockProps) => {
               <SelectItem value="rtmp">RTMP</SelectItem>
               <SelectItem value="hls">HLS</SelectItem>
               <SelectItem value="webrtc">WebRTC</SelectItem>
+              <SelectItem value="usb">USB Camera</SelectItem>
             </SelectContent>
           </Select>
-          <Input
-            placeholder="Stream URL"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="flex-1"
-          />
+          {protocol !== 'usb' && (
+            <Input
+              placeholder="Stream URL"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="flex-1"
+            />
+          )}
         </div>
 
         <div className="flex justify-end space-x-2">

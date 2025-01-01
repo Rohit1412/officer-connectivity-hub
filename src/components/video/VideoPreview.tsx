@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Eye } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import HLSPlayer from "./HLSPlayer";
 import ErrorOverlay from "./ErrorOverlay";
 import VideoControls from "./VideoControls";
+import { ResizablePanel } from "@/components/ui/resizable";
 
 interface VideoPreviewProps {
   url?: string;
@@ -15,6 +16,7 @@ const VideoPreview = ({ url, protocol = 'hls', onDelete }: VideoPreviewProps) =>
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const [size, setSize] = useState(35);
 
   if (!url) {
     return (
@@ -36,15 +38,21 @@ const VideoPreview = ({ url, protocol = 'hls', onDelete }: VideoPreviewProps) =>
 
   return (
     <div className="space-y-2">
-      <div className="relative">
-        <HLSPlayer 
-          url={url}
-          protocol={protocol}
-          onPlayingStateChange={setIsPlaying}
-          onError={setError}
-        />
-        <ErrorOverlay error={error || ""} />
-      </div>
+      <ResizablePanel
+        defaultSize={size}
+        onResize={setSize}
+        className="relative min-h-[240px]"
+      >
+        <div className="relative w-full h-full">
+          <HLSPlayer 
+            url={url}
+            protocol={protocol}
+            onPlayingStateChange={setIsPlaying}
+            onError={setError}
+          />
+          <ErrorOverlay error={error || ""} />
+        </div>
+      </ResizablePanel>
       <VideoControls 
         isPlaying={isPlaying}
         onDelete={handleDelete}
