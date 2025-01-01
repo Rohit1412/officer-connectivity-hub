@@ -1,14 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Eye } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import HLSPlayer from "./HLSPlayer";
 import ErrorOverlay from "./ErrorOverlay";
 import VideoControls from "./VideoControls";
 import { ResizablePanel } from "@/components/ui/resizable";
+import { StreamProtocol } from "@/utils/streamAdapters";
 
 interface VideoPreviewProps {
   url?: string;
-  protocol?: string;
+  protocol?: StreamProtocol;
   onDelete?: () => void;
 }
 
