@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   Activity,
   Database,
-  Video,
+  Camera,
   Bell,
   Navigation,
   FileText,
@@ -22,7 +22,7 @@ import { SidebarNav, SidebarNavLink } from "@/components/ui/sidebar-nav";
 const navigationItems = [
   { title: "Main Dashboard", url: "/", icon: Activity },
   { title: "Data Management", url: "/data", icon: Database },
-  { title: "Live Streaming", url: "/live", icon: Video },
+  { title: "Camera Streaming", url: "/camera-streaming", icon: Camera },
   { title: "Alerts", url: "/alerts", icon: Bell },
   { title: "Officer Tracking", url: "/tracking", icon: Navigation },
   { title: "Digital Evidence", url: "/evidence", icon: FileText },

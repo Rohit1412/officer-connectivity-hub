@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, Camera } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import ConnectionBlock from "@/components/camera/ConnectionBlock";
@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import TestStreamsSection from "@/components/streaming/TestStreamsSection";
 import StreamsList from "@/components/streaming/StreamsList";
 
-const LiveStreaming = () => {
+const CameraStreaming = () => {
   const navigate = useNavigate();
   const [showNewConnection, setShowNewConnection] = useState(false);
 
@@ -39,12 +39,15 @@ const LiveStreaming = () => {
             </Button>
             <Button onClick={() => setShowNewConnection(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Stream
+              Add Camera Stream
             </Button>
           </div>
 
           <div className="space-y-6">
-            <h1 className="text-3xl font-bold">Live Streaming</h1>
+            <div className="flex items-center gap-3">
+              <Camera className="h-6 w-6" />
+              <h1 className="text-3xl font-bold">Camera Streaming</h1>
+            </div>
             <p className="text-muted-foreground">
               Connect and manage your video streams from various sources including RTSP,
               HTTP, RTMP, and more.
@@ -74,4 +77,4 @@ const LiveStreaming = () => {
   );
 };
 
-export default LiveStreaming;
+export default CameraStreaming;
