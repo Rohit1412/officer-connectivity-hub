@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import Index from "./pages/Index";
 import DataManagement from "./pages/DataManagement";
-import DeviceManagement from "./pages/DeviceManagement";
 import LiveStreaming from "./pages/LiveStreaming";
 import Alerts from "./pages/Alerts";
 import OfficerTracking from "./pages/OfficerTracking";
@@ -28,7 +27,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/data" element={<DataManagement />} />
-            <Route path="/devices" element={<DeviceManagement />} />
             <Route path="/live" element={<LiveStreaming />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/tracking" element={<OfficerTracking />} />
