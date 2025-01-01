@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import AlertSystem from "@/components/AlertSystem";
-import VideoAnalysis from "@/components/VideoAnalysis";
 import DeviceCard from "@/components/DeviceCard";
 import VehicleMap from "@/components/VehicleMap";
 import CrimeHeatmap from "@/components/CrimeHeatmap";
@@ -74,7 +73,7 @@ const Index = () => {
     };
   }, []);
 
-  // Simulate real-time alerts (since we don't have an alerts table yet)
+  // Simulate real-time alerts
   useEffect(() => {
     const alertInterval = setInterval(() => {
       setActiveAlerts((prev) => {
@@ -154,12 +153,6 @@ const Index = () => {
 
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Live Video Analysis */}
-              <Card className="p-4">
-                <h2 className="text-xl font-semibold mb-4">Live Video Analysis</h2>
-                <VideoAnalysis />
-              </Card>
-
               {/* Active Alerts */}
               <Card className="p-4">
                 <h2 className="text-xl font-semibold mb-4">Critical Alerts</h2>
