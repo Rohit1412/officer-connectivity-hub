@@ -4,7 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import HLSPlayer from "./HLSPlayer";
 import ErrorOverlay from "./ErrorOverlay";
 import VideoControls from "./VideoControls";
-import { ResizablePanel } from "@/components/ui/resizable";
+import { ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
 import { StreamProtocol } from "@/utils/streamAdapters";
 
 interface VideoPreviewProps {
@@ -39,21 +39,26 @@ const VideoPreview = ({ url, protocol = 'hls', onDelete }: VideoPreviewProps) =>
 
   return (
     <div className="space-y-2">
-      <ResizablePanel
-        defaultSize={size}
-        onResize={setSize}
-        className="relative min-h-[240px]"
+      <ResizablePanelGroup 
+        direction="vertical"
+        className="min-h-[240px] rounded-lg overflow-hidden"
       >
-        <div className="relative w-full h-full">
-          <HLSPlayer 
-            url={url}
-            protocol={protocol}
-            onPlayingStateChange={setIsPlaying}
-            onError={setError}
-          />
-          <ErrorOverlay error={error || ""} />
-        </div>
-      </ResizablePanel>
+        <ResizablePanel
+          defaultSize={size}
+          onResize={setSize}
+          className="relative"
+        >
+          <div className="relative w-full h-full">
+            <HLSPlayer 
+              url={url}
+              protocol={protocol}
+              onPlayingStateChange={setIsPlaying}
+              onError={setError}
+            />
+            <ErrorOverlay error={error || ""} />
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
       <VideoControls 
         isPlaying={isPlaying}
         onDelete={handleDelete}
